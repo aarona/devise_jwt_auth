@@ -1,0 +1,7 @@
+bug-labels=bug,Bug,fix,Fix
+enhancement-labels=enhancement,Enhancement,feat,Feat
+since-tag=v0.1.0
+unreleased-label=Unreleased
+user=aarona
+project=devise_jwt_auth
+base=CHANGELOG.md
