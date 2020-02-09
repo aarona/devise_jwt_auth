@@ -2,11 +2,11 @@
 
 A JWT-based port of [Devise Token Auth](https://github.com/lynndylanhurley/devise_token_auth) with silent refresh support.
 
-If you're building SPA or a mobile app, this library takes an JWT token approach to authentication. If you're new to how JWTs (pronounced 'jot') work, you can read up on them [here](https://jwt.io/introduction/). This library is designed with an access/refresh token model in mind.
+If you're building SPA or a mobile app, this library takes an JWT approach to authentication. If you're new to how JWTs (pronounced 'jot') work, you can read up on them [here](https://jwt.io/introduction/). This library is designed with an access/refresh token authentication model in mind.
 
 ## How does silent refresh authentication work?
 
-When a user is authenticated, an access token is sent in the response and usually in the body in the form of JSON data. These tokens are designed to last a "short" time - only about 15 minutes. What you do with these tokens is up to you, but the best practice is to keep these tokens in memory and NOT to store them as cookies or in local storage. That way they cannot be used in XSS or CSRF attacks. The access tokens are then sent as headers in requests when an authenticated user is required to access protected resources.
+When a user is authenticated, an access token is sent in the response and usually in the body in the form of JSON data. These tokens are designed to last a "short" time - only about 15 minutes. What you do with these tokens is up to you, but the best practice is to keep these tokens in memory and NOT to store them as cookies or in local storage. That way they cannot be used in [XSS](https://en.wikipedia.org/wiki/Cross-site_scripting) or [CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery) attacks. The access tokens are then sent as headers in requests when an authenticated user is required to access protected resources.
 
 The downside here is that the user will need to reauthenticate themselves frequently and if the user reloads their browser, the access token disappears and the user is no longer authenticated. This is where refresh tokens come into play.
 
