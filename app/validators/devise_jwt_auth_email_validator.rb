@@ -14,7 +14,7 @@ class DeviseJwtAuthEmailValidator < ActiveModel::EachValidator
     message = options[:message]
 
     if message.nil?
-      # Try DeviceTokenAuth translations or fallback to ActiveModel translations
+      # Try DeviseJwtAuth translations or fallback to ActiveModel translations
       message = I18n.t(:'errors.messages.not_email', default: :'errors.messages.invalid')
     end
 
