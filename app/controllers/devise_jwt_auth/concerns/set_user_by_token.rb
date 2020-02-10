@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module DeviseJwtAuth::Concerns::SetUserByJwtToken
+module DeviseJwtAuth::Concerns::SetUserByToken
   extend ActiveSupport::Concern
   include DeviseJwtAuth::Concerns::ResourceFinder
 

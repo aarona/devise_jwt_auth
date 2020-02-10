@@ -2,8 +2,7 @@
 
 module DeviseJwtAuth
   class ApplicationController < DeviseController
-    # include DeviseJwtAuth::Concerns::SetUserByToken
-    include DeviseJwtAuth::Concerns::SetUserByJwtToken
+    include DeviseJwtAuth::Concerns::SetUserByToken
 
     def resource_data(opts = {})
       response_data = opts[:resource_json] || @resource.as_json
