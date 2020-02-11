@@ -67,6 +67,20 @@ module DeviseJwtAuth
             end
           end
 
+          def ip_column
+            # Padded with spaces so it aligns nicely with the rest of the columns.
+            "%-8s" % (inet? ? "inet" : "string")
+          end
+
+          def inet?
+            postgresql?
+          end
+
+          def postgresql?
+            config = ActiveRecord::Base.configurations[Rails.env]
+            config && config['adapter'] == 'postgresql'
+          end
+
           private
 
           def insert_after_line(filename, line, str)
