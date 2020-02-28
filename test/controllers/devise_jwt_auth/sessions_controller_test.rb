@@ -141,7 +141,8 @@ class DeviseJwtAuth::SessionsControllerTest < ActionController::TestCase
           assert_nil @data[DeviseJwtAuth.access_token_name]
         end
 
-        test 'response should not have refresh token' do
+        test 'response should delete refresh token from client' do
+          assert_equal true, response.cookies.keys.include?(DeviseJwtAuth.refresh_token_name)
           assert_nil response.cookies[DeviseJwtAuth.refresh_token_name]
         end
 
@@ -284,7 +285,6 @@ class DeviseJwtAuth::SessionsControllerTest < ActionController::TestCase
           @data = JSON.parse(response.body)
 
           assert_equal 200, response.status
-          # p 'DATA', @data.inspect
           assert @data[DeviseJwtAuth.access_token_name]
           assert response.cookies[DeviseJwtAuth.refresh_token_name]
         end
