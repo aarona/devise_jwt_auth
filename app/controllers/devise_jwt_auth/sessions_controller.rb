@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# see http://www.emilsoman.com/blog/2013/05/18/building-a-tested/
 module DeviseJwtAuth
   class SessionsController < DeviseJwtAuth::ApplicationController
     before_action :set_user_by_token, only: [:destroy]
@@ -48,18 +47,13 @@ module DeviseJwtAuth
 
     def destroy
       # TODO: logout? update token version?
-      
+
       # remove auth instance variables so that after_action does not run
       user = remove_instance_variable(:@resource) if @resource
-      # client = @token.client if @token.client
-      # @token.clear!
 
-      if user # && client && user.tokens[client]
-        # user.tokens.delete(client)
-        # user.save!
-
+      if user
         yield user if block_given?
-
+        clear_refresh_token_cookie
         render_destroy_success
       else
         render_destroy_error

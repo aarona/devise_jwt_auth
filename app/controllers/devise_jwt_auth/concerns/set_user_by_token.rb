@@ -107,5 +107,11 @@ module DeviseJwtAuth::Concerns::SetUserByToken
     )
   end
   
-  
+  def clear_refresh_token_cookie
+    response.set_cookie(DeviseJwtAuth.refresh_token_name,
+                        value: '',
+                        path: '/auth/refresh_token', # TODO: Use configured auth path
+                        expires: Time.zone.now
+    )
+  end
 end
