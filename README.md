@@ -57,7 +57,7 @@ See our [Contribution Guidelines](https://github.com/aarona/devise_jwt_auth/blob
 
 ## Live Demos
 
-Live demos will hopefully be added in the future. At the very least, I'm planning on creating a Rails/React proof of concept repo that you can clone and run locally.
+Live demos will hopefully be added in the future. Currently, I have a [repository](https://github.com/aarona/dja_example) available that is a proof of concept for DJA that uses React as the client. However, the example application only supports sigining up, sigining in and singing out. It doesn't provide a way to reset a user's password for example and other things that DJA supports. Those will be added in the near future.
 
 ## License
 
