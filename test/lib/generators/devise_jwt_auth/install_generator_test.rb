@@ -48,15 +48,6 @@ module DeviseJwtAuth
             assert_migration 'db/migrate/devise_jwt_auth_create_users.rb'
           end
         end
-
-        #         test 'add primary key type with rails 5 when specified in rails generator' do
-        #           run_generator %w[--primary_key_type=uuid --force]
-        #           if Rails::VERSION::MAJOR >= 5
-        #             assert_migration 'db/migrate/devise_jwt_auth_create_users.rb', /create_table\(:users, id: :uuid\) do/
-        #           else
-        #             assert_migration 'db/migrate/devise_jwt_auth_create_users.rb', /create_table\(:users\) do/
-        #           end
-        #         end
       end
     end
 
@@ -79,10 +70,7 @@ module DeviseJwtAuth
           @f = File.open(@fname, 'w') do |f|
             f.write <<-RUBY
               class User < #{active_record_needle}
-
-                def whatever
-                  puts 'whatever'
-                end
+                def whatever; puts 'whatever'; end
               end
             RUBY
           end
@@ -90,10 +78,7 @@ module DeviseJwtAuth
           @f = File.open(@fname, 'w') do |f|
             f.write <<-'RUBY'
               class User
-
-                def whatever
-                  puts 'whatever'
-                end
+                def whatever; puts 'whatever'; end
               end
             RUBY
           end

@@ -7,6 +7,14 @@ AllCops:
     - 'test/dummy/log/**/*'
   NewCops: enable
 
+Bundler/DuplicatedGem:
+  Exclude:
+    - 'Gemfile'
+
+Metrics/ClassLength:
+  Exclude:
+    - 'test/**/*'
+
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.
 # SupportedStyles: aligned, indented, indented_relative_to_receiver
@@ -92,6 +100,7 @@ Metrics/BlockLength:
     - 'lib/devise_jwt_auth/engine.rb'
     - 'test/dummy/config/**/*'
     - 'test/dummy/db/**/*'
+    - 'test/factories/**/*'
   ExcludedMethods:
     - describe
     - draw

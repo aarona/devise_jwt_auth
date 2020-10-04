@@ -19,6 +19,7 @@ begin
     require 'mongoid-locker'
   end
 rescue LoadError
+  raise StandardError, 'Unsupported ORM'
 end
 
 require 'devise_jwt_auth'
