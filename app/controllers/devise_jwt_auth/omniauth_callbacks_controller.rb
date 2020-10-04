@@ -102,7 +102,8 @@ module DeviseJwtAuth
           @_omniauth_params ||= session.delete('dta.omniauth.params')
           @_omniauth_params
         elsif params['omniauth_window_type']
-          @_omniauth_params = params.slice('omniauth_window_type', 'auth_origin_url', 'resource_class', 'origin')
+          @_omniauth_params =
+            params.slice('omniauth_window_type', 'auth_origin_url', 'resource_class', 'origin')
         else
           @_omniauth_params = {}
         end
@@ -157,7 +158,9 @@ module DeviseJwtAuth
     # in the success case, omniauth_window_type is in the omniauth_params.
     # in the failure case, it is in a query param.  See monkey patch above
     def omniauth_window_type
-      omniauth_params.nil? ? params['omniauth_window_type'] : omniauth_params['omniauth_window_type']
+      return params['omniauth_window_type'] if omniauth_params.nil?
+
+      omniauth_params['omniauth_window_type']
     end
 
     # this sesison value is set by the redirect_callbacks method. its purpose
@@ -205,7 +208,10 @@ module DeviseJwtAuth
     end
 
     def render_error_not_allowed_auth_origin_url
-      message = I18n.t('devise_jwt_auth.omniauth.not_allowed_redirect_url', redirect_url: unsafe_auth_origin_url)
+      message =
+        I18n.t('devise_jwt_auth.omniauth.not_allowed_redirect_url',
+               redirect_url: unsafe_auth_origin_url)
+
       render_data_or_redirect('authFailure', error: message)
     end
 

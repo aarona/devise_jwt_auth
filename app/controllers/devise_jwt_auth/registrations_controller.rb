@@ -33,7 +33,12 @@ module DeviseJwtAuth
       end
 
       # override email confirmation, must be sent manually from ctrl
-      callback_name = defined?(ActiveRecord) && resource_class < ActiveRecord::Base ? :commit : :create
+      callback_name = if defined?(ActiveRecord) && resource_class < ActiveRecord::Base
+                        :commit
+                      else
+                        :create
+                      end
+
       resource_class.set_callback(callback_name, :after, :send_on_create_confirmation_instructions)
       resource_class.skip_callback(callback_name, :after, :send_on_create_confirmation_instructions)
 
@@ -121,7 +126,10 @@ module DeviseJwtAuth
         status: 'error',
         data: resource_data
       }
-      message = I18n.t('devise_jwt_auth.registrations.redirect_url_not_allowed', redirect_url: @redirect_url)
+      message = I18n.t(
+        'devise_jwt_auth.registrations.redirect_url_not_allowed',
+        redirect_url: @redirect_url
+      )
       render_error(422, message, response)
     end
 
@@ -165,12 +173,17 @@ module DeviseJwtAuth
     def render_destroy_success
       render json: {
         status: 'success',
-        message: I18n.t('devise_jwt_auth.registrations.account_with_uid_destroyed', uid: @resource.uid)
+        message: I18n.t(
+          'devise_jwt_auth.registrations.account_with_uid_destroyed',
+          uid: @resource.uid
+        )
       }
     end
 
     def render_destroy_error
-      render_error(404, I18n.t('devise_jwt_auth.registrations.account_to_destroy_not_found'), status: 'error')
+      render_error(404,
+                   I18n.t('devise_jwt_auth.registrations.account_to_destroy_not_found'),
+                   status: 'error')
     end
 
     private
@@ -178,7 +191,8 @@ module DeviseJwtAuth
     def resource_update_method
       if DeviseJwtAuth.check_current_password_before_update == :attributes
         'update_with_password'
-      elsif DeviseJwtAuth.check_current_password_before_update == :password && account_update_params.key?(:password)
+      elsif DeviseJwtAuth.check_current_password_before_update == :password &&
+            account_update_params.key?(:password)
         'update_with_password'
       elsif account_update_params.key?(:current_password)
         'update_with_password'
@@ -192,7 +206,9 @@ module DeviseJwtAuth
     end
 
     def validate_account_update_params
-      validate_post_data account_update_params, I18n.t('errors.messages.validate_account_update_params')
+      validate_post_data account_update_params, I18n.t(
+        'errors.messages.validate_account_update_params'
+      )
     end
 
     def validate_post_data(which, message)

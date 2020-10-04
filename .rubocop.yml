@@ -108,7 +108,6 @@ Metrics/BlockLength:
     - namespace
     - devise_scope
     - unnest_namespace
-  Max: 25
 
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
@@ -123,4 +122,3 @@ Layout/LineLength:
     - 'lib/generators/devise_jwt_auth/install_generator_helpers.rb'
   IgnoredPatterns:
     - '(\A|\s)#'
-  Max: 100

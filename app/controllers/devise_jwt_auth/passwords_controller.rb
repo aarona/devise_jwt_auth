@@ -49,7 +49,10 @@ module DeviseJwtAuth
         yield @resource if block_given?
 
         if require_client_password_reset_token?
-          redirect_to DeviseJwtAuth::Url.generate(@redirect_url, reset_password_token: resource_params[:reset_password_token])
+          redirect_to DeviseJwtAuth::Url.generate(
+            @redirect_url,
+            reset_password_token: resource_params[:reset_password_token]
+          )
         else
           redirect_header_options = { reset_password: true }
           redirect_headers = @resource.create_named_token_pair
@@ -107,7 +110,11 @@ module DeviseJwtAuth
     protected
 
     def resource_update_method
-      allow_password_change = recoverable_enabled? && @resource.allow_password_change == true || require_client_password_reset_token?
+      allow_password_change =
+        recoverable_enabled? &&
+        @resource.allow_password_change == true ||
+        require_client_password_reset_token?
+
       if DeviseJwtAuth.check_current_password_before_update == false || allow_password_change
         'update'
       else
@@ -128,7 +135,8 @@ module DeviseJwtAuth
         status: 'error',
         data: resource_data
       }
-      message = I18n.t('devise_jwt_auth.passwords.not_allowed_redirect_url', redirect_url: @redirect_url)
+      message = I18n.t('devise_jwt_auth.passwords.not_allowed_redirect_url',
+                       redirect_url: @redirect_url)
       render_error(422, message, response)
     end
 
@@ -155,7 +163,8 @@ module DeviseJwtAuth
     end
 
     def render_update_error_password_not_required
-      render_error(422, I18n.t('devise_jwt_auth.passwords.password_not_required', provider: @resource.provider.humanize))
+      render_error(422, I18n.t('devise_jwt_auth.passwords.password_not_required',
+                               provider: @resource.provider.humanize))
     end
 
     def render_update_error_missing_password
@@ -206,7 +215,9 @@ module DeviseJwtAuth
     end
 
     def reset_password_token_as_raw?(recoverable)
-      recoverable && recoverable.reset_password_token.present? && !require_client_password_reset_token?
+      recoverable &&
+        recoverable.reset_password_token.present? &&
+        !require_client_password_reset_token?
     end
 
     def require_client_password_reset_token?

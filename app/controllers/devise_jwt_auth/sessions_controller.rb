@@ -20,9 +20,14 @@ module DeviseJwtAuth
         @resource = find_resource(field, q_value)
       end
 
-      if @resource && valid_params?(field, q_value) && (!@resource.respond_to?(:active_for_authentication?) || @resource.active_for_authentication?)
+      if @resource &&
+         valid_params?(field, q_value) &&
+         (!@resource.respond_to?(:active_for_authentication?) ||
+          @resource.active_for_authentication?)
         valid_password = @resource.valid_password?(resource_params[:password])
-        if (@resource.respond_to?(:valid_for_authentication?) && !@resource.valid_for_authentication? { valid_password }) || !valid_password
+        if (@resource.respond_to?(:valid_for_authentication?) &&
+           !@resource.valid_for_authentication? { valid_password }) ||
+           !valid_password
           return render_create_error_bad_credentials
         end
 
@@ -35,7 +40,9 @@ module DeviseJwtAuth
 
         update_refresh_token_cookie
         render_create_success
-      elsif @resource && !(!@resource.respond_to?(:active_for_authentication?) || @resource.active_for_authentication?)
+      elsif @resource &&
+            !(!@resource.respond_to?(:active_for_authentication?) ||
+              @resource.active_for_authentication?)
         if @resource.respond_to?(:locked_at) && @resource.locked_at
           render_create_error_account_locked
         else
