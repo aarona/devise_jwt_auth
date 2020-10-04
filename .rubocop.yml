@@ -6,6 +6,7 @@ AllCops:
     - 'test/dummy/tmp/**/*'
     - 'test/dummy/log/**/*'
   NewCops: enable
+  TargetRubyVersion: 2.4
 
 Bundler/DuplicatedGem:
   Exclude:
@@ -119,6 +120,7 @@ Layout/LineLength:
     - 'test/**/*'
     - 'Guardfile'
     - 'devise_jwt_auth.gemspec'
+    - 'lib/generators/devise_jwt_auth/install_generator_helpers.rb'
   IgnoredPatterns:
     - '(\A|\s)#'
-  Max: 80
+  Max: 100
