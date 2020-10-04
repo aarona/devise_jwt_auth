@@ -2,7 +2,7 @@
 
 class Custom::RegistrationsController < DeviseJwtAuth::RegistrationsController
   def create
-    super do |resource|
+    super do |_resource|
       @create_block_called = true
     end
   end

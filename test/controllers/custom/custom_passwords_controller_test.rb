@@ -13,7 +13,7 @@ class Custom::PasswordsControllerTest < ActionController::TestCase
 
     test 'yield resource to block on create success' do
       post :create,
-           params: { email:  @resource.email,
+           params: { email: @resource.email,
                      redirect_url: @redirect_url }
 
       @mail = ActionMailer::Base.deliveries.last
@@ -21,7 +21,7 @@ class Custom::PasswordsControllerTest < ActionController::TestCase
 
       @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
       @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=([^&]*)&/)[1])
-      @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)\"/)[1]
+      @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)"/)[1]
 
       assert @controller.create_block_called?,
              'create failed to yield resource to provided block'
@@ -32,7 +32,7 @@ class Custom::PasswordsControllerTest < ActionController::TestCase
       @redirect_url = 'http://ng-token-auth.dev'
 
       post :create,
-           params: { email:  @resource.email,
+           params: { email: @resource.email,
                      redirect_url: @redirect_url },
            xhr: true
 
@@ -41,7 +41,7 @@ class Custom::PasswordsControllerTest < ActionController::TestCase
 
       @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
       @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=([^&]*)&/)[1])
-      @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)\"/)[1]
+      @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)"/)[1]
 
       get :edit,
           params: { reset_password_token: @mail_reset_token,

@@ -6,7 +6,7 @@ DeviseJwtAuth.setup do |config|
   # use the HTTP only refresh cookie that is sent during the authentication
   # process and make refresh token requests.
   # config.send_new_access_token_on_each_request = false
-  
+
   # By default, refresh token HTTP Only cookies last for 2 weeks. These tokens
   # are used for requesting shorter-lived acccess tokens.
   # config.refresh_token_lifespan = 2.weeks
@@ -32,7 +32,7 @@ DeviseJwtAuth.setup do |config|
   # environment variable or secret key base that isn't store in a repository.
   # Also, its a good idea to NOT use the same key for access tokens.
   config.refresh_token_encryption_key = 'your-refresh-token-secret-key-here'
-  
+
   # This is the refresh token encryption key. You should set this in an
   # environment variable or secret key base that isn't store in a repository.
   # Also, its a good idea to NOT use the same key for access tokens.
@@ -70,5 +70,4 @@ DeviseJwtAuth.setup do |config|
   # config.update_token_version_after_password_reset = true
   # config.bypass_sign_in                            = true
   # config.require_client_password_reset_token       = false
-
 end

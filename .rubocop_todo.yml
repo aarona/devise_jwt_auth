@@ -154,7 +154,7 @@ Layout/SpaceInsideArrayLiteralBrackets:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: final_newline, final_blank_line
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Exclude:
     - 'app/validators/email_validator.rb'
     - 'test/dummy/config/initializers/cookies_serializer.rb'
@@ -178,7 +178,7 @@ Lint/DuplicateMethods:
     - 'app/controllers/devise_jwt_auth/omniauth_callbacks_controller.rb'
 
 # Offense count: 2
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Exclude:
     - 'test/dummy/bin/rails'
     - 'test/dummy/bin/rake'
@@ -190,7 +190,7 @@ Lint/IneffectiveAccessModifier:
 
 # Offense count: 2
 # Cop supports --auto-correct.
-Lint/StringConversionInInterpolation:
+Lint/RedundantStringCoercion:
   Exclude:
     - 'app/controllers/devise_jwt_auth/concerns/resource_finder.rb'
 
@@ -244,7 +244,7 @@ Metrics/CyclomaticComplexity:
 # Offense count: 92
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
-Metrics/LineLength:
+Layout/LineLength:
   Exclude:
     - 'app/controllers/devise_jwt_auth/application_controller.rb'
     - 'app/controllers/devise_jwt_auth/concerns/set_user_by_token.rb'
@@ -298,7 +298,7 @@ Naming/PredicateName:
 # Offense count: 2
 # Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
 # AllowedNames: io, id, to
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   Exclude:
     - 'app/controllers/devise_jwt_auth/application_controller.rb'
     - 'app/controllers/devise_jwt_auth/concerns/resource_finder.rb'
@@ -306,23 +306,23 @@ Naming/UncommunicativeMethodParamName:
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: MaxKeyValuePairs.
-Performance/RedundantMerge:
-  Exclude:
-    - 'app/controllers/devise_jwt_auth/omniauth_callbacks_controller.rb'
+# Performance/RedundantMerge:
+#   Exclude:
+#     - 'app/controllers/devise_jwt_auth/omniauth_callbacks_controller.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Performance/RegexpMatch:
-  Exclude:
-    - 'app/validators/email_validator.rb'
+# Performance/RegexpMatch:
+#   Exclude:
+#     - 'app/validators/email_validator.rb'
 
 # Offense count: 4
 # Cop supports --auto-correct.
-Performance/StringReplacement:
-  Exclude:
-    - 'app/controllers/devise_jwt_auth/omniauth_callbacks_controller.rb'
-    - 'lib/devise_jwt_auth/rails/routes.rb'
-    - 'test/lib/generators/devise_jwt_auth/install_generator_with_namespace_test.rb'
+# Performance/StringReplacement:
+#   Exclude:
+#     - 'app/controllers/devise_jwt_auth/omniauth_callbacks_controller.rb'
+#     - 'lib/devise_jwt_auth/rails/routes.rb'
+#     - 'test/lib/generators/devise_jwt_auth/install_generator_with_namespace_test.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -569,6 +569,6 @@ Style/TrailingUnderscoreVariable:
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Style/UnneededPercentQ:
+Style/RedundantPercentQ:
   Exclude:
     - 'app/controllers/devise_jwt_auth/omniauth_callbacks_controller.rb'

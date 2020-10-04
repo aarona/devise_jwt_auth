@@ -26,7 +26,7 @@ module ActionDispatch::Routing
       controllers[:unlocks] = unlocks_ctrl if unlocks_ctrl
 
       # remove any unwanted devise modules
-      opts[:skip].each{ |item| controllers.delete(item) }
+      opts[:skip].each { |item| controllers.delete(item) }
 
       devise_for resource.pluralize.underscore.gsub('/', '_').to_sym,
                  class_name: resource,
@@ -44,12 +44,12 @@ module ActionDispatch::Routing
 
         # clear scope so controller routes aren't namespaced
         @scope = ActionDispatch::Routing::Mapper::Scope.new(
-          path:         '',
+          path: '',
           shallow_path: '',
-          constraints:  {},
-          defaults:     {},
-          options:      {},
-          parent:       nil
+          constraints: {},
+          defaults: {},
+          options: {},
+          parent: nil
         )
 
         mapping_name = resource.underscore.gsub('/', '_')
@@ -57,7 +57,9 @@ module ActionDispatch::Routing
 
         devise_scope mapping_name.to_sym do
           # path to refresh access tokens
-          get "#{full_path}/refresh_token", controller: refresh_token_ctrl.to_s, action: 'show' if !opts[:skip].include?(:refresh_token)
+          unless opts[:skip].include?(:refresh_token)
+            get "#{full_path}/refresh_token", controller: refresh_token_ctrl.to_s, action: 'show'
+          end
           # get "#{full_path}/validate_token", controller: token_validations_ctrl.to_s, action: 'validate_token' if !opts[:skip].include?(:token_validations)
 
           # omniauth routes. only define if omniauth is installed and not skipped.
@@ -70,9 +72,9 @@ module ActionDispatch::Routing
 
             # preserve the resource class thru oauth authentication by setting name of
             # resource as "resource_class" param
-            match "#{full_path}/:provider", to: redirect{ |params, request|
+            match "#{full_path}/:provider", to: redirect { |params, request|
               # get the current querystring
-              qs = CGI::parse(request.env['QUERY_STRING'])
+              qs = CGI.parse(request.env['QUERY_STRING'])
 
               # append name of current resource
               qs['resource_class'] = [resource]
@@ -80,7 +82,7 @@ module ActionDispatch::Routing
 
               set_omniauth_path_prefix!(DeviseJwtAuth.omniauth_prefix)
 
-              redirect_params = {}.tap { |hash| qs.each{ |k, v| hash[k] = v.first } }
+              redirect_params = {}.tap { |hash| qs.each { |k, v| hash[k] = v.first } }
 
               if DeviseJwtAuth.redirect_whitelist
                 redirect_url = request.params['auth_origin_url']

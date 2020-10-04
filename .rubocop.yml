@@ -5,6 +5,7 @@ AllCops:
     - 'coverage/**/*'
     - 'test/dummy/tmp/**/*'
     - 'test/dummy/log/**/*'
+  NewCops: enable
 
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.
@@ -101,7 +102,7 @@ Metrics/BlockLength:
 
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
-Metrics/LineLength:
+Layout/LineLength:
   inherit_mode:
     merge:
       - Exclude

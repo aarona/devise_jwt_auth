@@ -22,7 +22,7 @@ module DeviseJwtAuth
         )
 
         if @resource.errors.empty?
-          return render_create_success
+          render_create_success
         else
           render_create_error @resource.errors
         end
@@ -36,12 +36,14 @@ module DeviseJwtAuth
       # if a user is not found, return nil
       @resource = resource_class.with_reset_password_token(resource_params[:reset_password_token])
 
-      if @resource && @resource.reset_password_period_valid?
+      if @resource&.reset_password_period_valid?
         # TODO: add a token invalidator
         # token = @resource.create_token unless require_client_password_reset_token?
 
         # ensure that user is confirmed
-        @resource.skip_confirmation! if confirmable_enabled? && !@resource.confirmed_at
+        if confirmable_enabled? && !@resource.confirmed_at
+          @resource.skip_confirmation!
+        end
         # allow user to change password once without current_password
         @resource.allow_password_change = true if recoverable_enabled?
         @resource.save!
@@ -52,13 +54,13 @@ module DeviseJwtAuth
           redirect_to DeviseJwtAuth::Url.generate(@redirect_url, reset_password_token: resource_params[:reset_password_token])
         else
           redirect_header_options = { reset_password: true }
-          redirect_headers = @resource.create_named_token_pair.
-                             merge(redirect_header_options)
+          redirect_headers = @resource.create_named_token_pair
+                               .merge(redirect_header_options)
 
           # TODO: do we put the refresh token here?
           # we do if token exists (see line 41)
           update_refresh_token_cookie
-          
+
           redirect_to_link = DeviseJwtAuth::Url.generate(@redirect_url, redirect_headers)
 
           redirect_to redirect_to_link
@@ -100,9 +102,9 @@ module DeviseJwtAuth
         # send refresh cookie
         # send access token
         update_refresh_token_cookie
-        return render_update_success
+        render_update_success
       else
-        return render_update_error
+        render_update_error
       end
     end
 
@@ -128,7 +130,7 @@ module DeviseJwtAuth
     def render_error_not_allowed_redirect_url
       response = {
         status: 'error',
-        data:   resource_data
+        data: resource_data
       }
       message = I18n.t('devise_jwt_auth.passwords.not_allowed_redirect_url', redirect_url: @redirect_url)
       render_error(422, message, response)
@@ -170,7 +172,7 @@ module DeviseJwtAuth
         data: resource_data,
         message: I18n.t('devise_jwt_auth.passwords.successfully_updated')
       }.merge!(@resource.create_named_token_pair)
-      
+
       render json: response_body
     end
 
@@ -203,7 +205,10 @@ module DeviseJwtAuth
       )
 
       return render_create_error_missing_redirect_url unless @redirect_url
-      return render_error_not_allowed_redirect_url if blacklisted_redirect_url?(@redirect_url)
+
+      if blacklisted_redirect_url?(@redirect_url)
+        render_error_not_allowed_redirect_url
+      end
     end
 
     def reset_password_token_as_raw?(recoverable)

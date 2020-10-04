@@ -27,9 +27,17 @@ module DeviseJwtAuth::Concerns::User
     end
 
     # don't use default devise email validation
-    def email_required?; false; end
-    def email_changed?; false; end
-    def will_save_change_to_email?; false; end
+    def email_required?
+      false
+    end
+
+    def email_changed?
+      false
+    end
+
+    def will_save_change_to_email?
+      false
+    end
 
     if DeviseJwtAuth.send_confirmation_email && devise_modules.include?(:confirmable)
       include DeviseJwtAuth::Concerns::ConfirmableSupport
@@ -37,6 +45,7 @@ module DeviseJwtAuth::Concerns::User
 
     def password_required?
       return false unless provider == 'email'
+
       super
     end
 
@@ -77,11 +86,11 @@ module DeviseJwtAuth::Concerns::User
     end
 
     def create_token(token_options = {})
-      DeviseJwtAuth::TokenFactory.create_access_token({sub: uid}.merge(token_options))
+      DeviseJwtAuth::TokenFactory.create_access_token({ sub: uid }.merge(token_options))
     end
 
     def create_refresh_token(token_options = {})
-      DeviseJwtAuth::TokenFactory.create_refresh_token({sub: uid}.merge(token_options))
+      DeviseJwtAuth::TokenFactory.create_refresh_token({ sub: uid }.merge(token_options))
     end
   end
 
@@ -93,7 +102,9 @@ module DeviseJwtAuth::Concerns::User
 
   # this must be done from the controller so that additional params
   # can be passed on from the client
-  def send_confirmation_notification?; false; end
+  def send_confirmation_notification?
+    false
+  end
 
   def build_auth_url(base_url, args)
     args[:uid]    = uid

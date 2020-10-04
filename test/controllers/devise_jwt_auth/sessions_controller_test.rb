@@ -175,7 +175,7 @@ class DeviseJwtAuth::SessionsControllerTest < ActionController::TestCase
 
         test 'response should not have refresh token' do
           assert_nil response.cookies[DeviseJwtAuth.refresh_token_name]
-        end        
+        end
       end
 
       describe 'failure' do
@@ -207,37 +207,35 @@ class DeviseJwtAuth::SessionsControllerTest < ActionController::TestCase
         end
       end
 
-=begin
-      describe 'failure with bad password when change_headers_on_each_request false' do
-        before do
-          DeviseJwtAuth.change_headers_on_each_request = false
-
-          # accessing current_user calls through set_user_by_token,
-          # which initializes client_id
-          @controller.current_user
-
-          post :create,
-               params: { email: @existing_user.email,
-                         password: 'bogus' }
-
-          @resource = assigns(:resource)
-          @data = JSON.parse(response.body)
-        end
-
-        test 'request should fail' do
-          assert_equal 401, response.status
-        end
-
-        test 'response should contain errors' do
-          assert @data['errors']
-          assert_equal @data['errors'], [I18n.t('devise_jwt_auth.sessions.bad_credentials')]
-        end
-
-        after do
-          DeviseJwtAuth.change_headers_on_each_request = true
-        end
-      end
-=end
+      #       describe 'failure with bad password when change_headers_on_each_request false' do
+      #         before do
+      #           DeviseJwtAuth.change_headers_on_each_request = false
+      #
+      #           # accessing current_user calls through set_user_by_token,
+      #           # which initializes client_id
+      #           @controller.current_user
+      #
+      #           post :create,
+      #                params: { email: @existing_user.email,
+      #                          password: 'bogus' }
+      #
+      #           @resource = assigns(:resource)
+      #           @data = JSON.parse(response.body)
+      #         end
+      #
+      #         test 'request should fail' do
+      #           assert_equal 401, response.status
+      #         end
+      #
+      #         test 'response should contain errors' do
+      #           assert @data['errors']
+      #           assert_equal @data['errors'], [I18n.t('devise_jwt_auth.sessions.bad_credentials')]
+      #         end
+      #
+      #         after do
+      #           DeviseJwtAuth.change_headers_on_each_request = true
+      #         end
+      #       end
 
       describe 'case-insensitive email' do
         before do

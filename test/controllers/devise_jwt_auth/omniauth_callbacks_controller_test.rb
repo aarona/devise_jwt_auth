@@ -18,7 +18,7 @@ class OmniauthTest < ActionDispatch::IntegrationTest
   end
 
   def get_parsed_data_json
-    encoded_json_data = @response.body.match(/var data \= JSON.parse\(decodeURIComponent\(\'(.+)\'\)\)\;/)[1]
+    encoded_json_data = @response.body.match(/var data = JSON.parse\(decodeURIComponent\('(.+)'\)\);/)[1]
     JSON.parse(URI.unescape(encoded_json_data))
   end
 
@@ -286,9 +286,9 @@ class OmniauthTest < ActionDispatch::IntegrationTest
   describe 'failure callback' do
     setup do
       OmniAuth.config.mock_auth[:facebook] = :invalid_credentials
-      OmniAuth.config.on_failure = proc { |env|
+      OmniAuth.config.on_failure = proc do |env|
         OmniAuth::FailureEndpoint.new(env).redirect_to_failure
-      }
+      end
     end
 
     test 'renders expected data' do
@@ -331,8 +331,7 @@ class OmniauthTest < ActionDispatch::IntegrationTest
   end
 
   describe 'Using redirect_whitelist' do
-
-    describe "newWindow" do
+    describe 'newWindow' do
       before do
         @user_email = 'slemp.diggler@sillybandz.gov'
         OmniAuth.config.mock_auth[:facebook] = OmniAuth::AuthHash.new(
@@ -361,7 +360,7 @@ class OmniauthTest < ActionDispatch::IntegrationTest
 
         data = get_parsed_data_json
         assert_equal "Redirect to &#39;#{@bad_redirect_url}&#39; not allowed.",
-                    data['error']
+                     data['error']
         # TODO: parse data and assert no access or refresh tokens were sent.
       end
 
@@ -395,7 +394,7 @@ class OmniauthTest < ActionDispatch::IntegrationTest
       end
     end
 
-    describe "sameWindow" do
+    describe 'sameWindow' do
       before do
         @user_email = 'slemp.diggler@sillybandz.gov'
         OmniAuth.config.mock_auth[:facebook] = OmniAuth::AuthHash.new(

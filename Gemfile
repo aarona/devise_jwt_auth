@@ -18,10 +18,10 @@ gemspec
 group :development, :test do
   gem 'attr_encrypted'
   gem 'figaro'
+  gem 'omniauth-apple'
   gem 'omniauth-facebook'
   gem 'omniauth-github'
   gem 'omniauth-google-oauth2'
-  gem 'omniauth-apple'
   gem 'rack-cors'
   gem 'thor'
 

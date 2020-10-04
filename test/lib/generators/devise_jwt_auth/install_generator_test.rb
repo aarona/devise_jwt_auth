@@ -2,8 +2,12 @@
 
 require 'test_helper'
 require 'fileutils'
-require 'generators/devise_jwt_auth/install_generator' if DEVISE_JWT_AUTH_ORM == :active_record
-require 'generators/devise_jwt_auth/install_mongoid_generator' if DEVISE_JWT_AUTH_ORM == :mongoid
+if DEVISE_JWT_AUTH_ORM == :active_record
+  require 'generators/devise_jwt_auth/install_generator'
+end
+if DEVISE_JWT_AUTH_ORM == :mongoid
+  require 'generators/devise_jwt_auth/install_mongoid_generator'
+end
 
 module DeviseJwtAuth
   class InstallGeneratorTest < Rails::Generators::TestCase
@@ -45,16 +49,14 @@ module DeviseJwtAuth
           end
         end
 
-=begin
-        test 'add primary key type with rails 5 when specified in rails generator' do
-          run_generator %w[--primary_key_type=uuid --force]
-          if Rails::VERSION::MAJOR >= 5
-            assert_migration 'db/migrate/devise_jwt_auth_create_users.rb', /create_table\(:users, id: :uuid\) do/
-          else
-            assert_migration 'db/migrate/devise_jwt_auth_create_users.rb', /create_table\(:users\) do/
-          end
-        end
-=end
+        #         test 'add primary key type with rails 5 when specified in rails generator' do
+        #           run_generator %w[--primary_key_type=uuid --force]
+        #           if Rails::VERSION::MAJOR >= 5
+        #             assert_migration 'db/migrate/devise_jwt_auth_create_users.rb', /create_table\(:users, id: :uuid\) do/
+        #           else
+        #             assert_migration 'db/migrate/devise_jwt_auth_create_users.rb', /create_table\(:users\) do/
+        #           end
+        #         end
       end
     end
 
@@ -72,7 +74,7 @@ module DeviseJwtAuth
         case DEVISE_JWT_AUTH_ORM
         when :active_record
           # account for rails version 5
-          active_record_needle = (Rails::VERSION::MAJOR == 5) ? 'ApplicationRecord' : 'ActiveRecord::Base'
+          active_record_needle = Rails::VERSION::MAJOR == 5 ? 'ApplicationRecord' : 'ActiveRecord::Base'
 
           @f = File.open(@fname, 'w') do |f|
             f.write <<-RUBY

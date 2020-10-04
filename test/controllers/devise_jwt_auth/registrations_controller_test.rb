@@ -105,7 +105,7 @@ class DeviseJwtAuth::RegistrationsControllerTest < ActionDispatch::IntegrationTe
 
         @data = JSON.parse(response.body)
       end
-      
+
       test 'an access token should be returned' do
         assert @data[DeviseJwtAuth.access_token_name]
       end
@@ -185,7 +185,7 @@ class DeviseJwtAuth::RegistrationsControllerTest < ActionDispatch::IntegrationTe
                        unpermitted_param: '(x_x)' }
 
         @data = JSON.parse(response.body)
-        
+
         assert_equal 422, response.status
         assert_nil @data[DeviseJwtAuth.access_token_name]
         assert_nil response.cookies[DeviseJwtAuth.refresh_token_name]
@@ -223,17 +223,17 @@ class DeviseJwtAuth::RegistrationsControllerTest < ActionDispatch::IntegrationTe
         @resource = assigns(:resource)
         @data = JSON.parse(response.body)
         @mail = ActionMailer::Base.deliveries.last
-        @sent_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=([^&]*)(&|\")/)[1])
+        @sent_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=([^&]*)(&|")/)[1])
       end
-      
+
       teardown do
         DeviseJwtAuth.default_confirm_success_url = nil
       end
-      
+
       test 'request should be successful' do
         assert_equal 200, response.status
       end
-      
+
       test 'email contains the default redirect url' do
         assert_equal @redirect_url, @sent_redirect_url
       end
@@ -310,7 +310,7 @@ class DeviseJwtAuth::RegistrationsControllerTest < ActionDispatch::IntegrationTe
         @mail = ActionMailer::Base.deliveries.last
 
         @mail_reset_token  = @mail.body.match(/confirmation_token=([^&]*)&/)[1]
-        @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=(.*)\"/)[1])
+        @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=(.*)"/)[1])
         @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
       end
 
@@ -449,10 +449,10 @@ class DeviseJwtAuth::RegistrationsControllerTest < ActionDispatch::IntegrationTe
         before do
           @existing_user = create(:user, :confirmed)
           @auth_headers = @existing_user.create_named_token_pair
-          #@client_id     = @auth_headers['client']
+          # @client_id     = @auth_headers['client']
 
           # ensure request is not treated as batch request
-          #age_token(@existing_user, @client_id)
+          # age_token(@existing_user, @client_id)
 
           delete '/auth', params: {}, headers: @auth_headers
 
@@ -495,7 +495,7 @@ class DeviseJwtAuth::RegistrationsControllerTest < ActionDispatch::IntegrationTe
     describe 'Update user account' do
       describe 'existing user' do
         before do
-          @existing_user = create(:user, :confirmed)          
+          @existing_user = create(:user, :confirmed)
           @auth_headers = @existing_user.create_named_token_pair
 
           # @client_id     = @auth_headers['client']
@@ -799,7 +799,7 @@ class DeviseJwtAuth::RegistrationsControllerTest < ActionDispatch::IntegrationTe
         @resource.skip_confirmation!
         @resource.save!
         @auth_headers = @resource.create_named_token_pair
-  
+
         # @client_id     = @auth_headers['client']
 
         # ensure request is not treated as batch request
@@ -832,7 +832,7 @@ class DeviseJwtAuth::RegistrationsControllerTest < ActionDispatch::IntegrationTe
         @resource.reload
 
         @mail_reset_token  = @mail.body.match(/confirmation_token=([^&]*)&/)[1]
-        @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=(.*)\"/)[1])
+        @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=(.*)"/)[1])
         @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
       end
 
@@ -879,20 +879,18 @@ class DeviseJwtAuth::RegistrationsControllerTest < ActionDispatch::IntegrationTe
       test 'user was confirmed' do
         assert @resource.confirmed?
       end
-      
-=begin
-      test 'auth headers were returned in response' do
-        assert response.headers['access-token']
-        assert response.headers['token-type']
-        assert response.headers['client']
-        assert response.headers['expiry']
-        assert response.headers['uid']
-      end
 
-      test 'response token is valid' do
-        assert @resource.valid_token?(@token, @client_id)
-      end
-=end
+      #       test 'auth headers were returned in response' do
+      #         assert response.headers['access-token']
+      #         assert response.headers['token-type']
+      #         assert response.headers['client']
+      #         assert response.headers['expiry']
+      #         assert response.headers['uid']
+      #       end
+      #
+      #       test 'response token is valid' do
+      #         assert @resource.valid_token?(@token, @client_id)
+      #       end
     end
 
     describe 'User with only :database_authenticatable and :registerable included' do

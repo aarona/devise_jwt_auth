@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module DeviseJwtAuth::Concerns::TokensSerialization
   # Serialization hash to json
   def self.dump(object)
-    object.each_value(&:compact!) unless object.nil?
+    object&.each_value(&:compact!)
     JSON.generate(object)
   end
 

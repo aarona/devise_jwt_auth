@@ -28,7 +28,9 @@ module DeviseJwtAuth
       end
 
       # if whitelist is set, validate redirect_url against whitelist
-      return render_create_error_redirect_url_not_allowed if blacklisted_redirect_url?(@redirect_url)
+      if blacklisted_redirect_url?(@redirect_url)
+        return render_create_error_redirect_url_not_allowed
+      end
 
       # override email confirmation, must be sent manually from ctrl
       callback_name = defined?(ActiveRecord) && resource_class < ActiveRecord::Base ? :commit : :create
@@ -46,9 +48,9 @@ module DeviseJwtAuth
         unless @resource.confirmed?
           # user will require email authentication
           @resource.send_confirmation_instructions({
-            client_config: params[:config_name],
-            redirect_url: @redirect_url
-          })
+                                                     client_config: params[:config_name],
+                                                     redirect_url: @redirect_url
+                                                   })
         end
 
         update_refresh_token_cookie if active_for_authentication?
@@ -98,17 +100,17 @@ module DeviseJwtAuth
       @resource.provider   = provider
 
       # honor devise configuration for case_insensitive_keys
-      if resource_class.case_insensitive_keys.include?(:email)
-        @resource.email = sign_up_params[:email].try(:downcase)
-      else
-        @resource.email = sign_up_params[:email]
-      end
+      @resource.email = if resource_class.case_insensitive_keys.include?(:email)
+                          sign_up_params[:email].try(:downcase)
+                        else
+                          sign_up_params[:email]
+                        end
     end
 
     def render_create_error_missing_confirm_success_url
       response = {
         status: 'error',
-        data:   resource_data
+        data: resource_data
       }
       message = I18n.t('devise_jwt_auth.registrations.missing_confirm_success_url')
       render_error(422, message, response)
@@ -117,7 +119,7 @@ module DeviseJwtAuth
     def render_create_error_redirect_url_not_allowed
       response = {
         status: 'error',
-        data:   resource_data
+        data: resource_data
       }
       message = I18n.t('devise_jwt_auth.registrations.redirect_url_not_allowed', redirect_url: @redirect_url)
       render_error(422, message, response)
@@ -126,17 +128,19 @@ module DeviseJwtAuth
     def render_create_success
       response_data = {
         status: 'success',
-        data:   resource_data
+        data: resource_data
       }
 
-      response_data.merge!(@resource.create_named_token_pair) if active_for_authentication?
+      if active_for_authentication?
+        response_data.merge!(@resource.create_named_token_pair)
+      end
       render json: response_data
     end
 
     def render_create_error
       render json: {
         status: 'error',
-        data:   resource_data,
+        data: resource_data,
         errors: resource_errors
       }, status: 422
     end
@@ -144,7 +148,7 @@ module DeviseJwtAuth
     def render_update_success
       render json: {
         status: 'success',
-        data:   resource_data
+        data: resource_data
       }
     end
 
@@ -192,8 +196,10 @@ module DeviseJwtAuth
       validate_post_data account_update_params, I18n.t('errors.messages.validate_account_update_params')
     end
 
-    def validate_post_data which, message
-      render_error(:unprocessable_entity, message, status: 'error') if which.empty?
+    def validate_post_data(which, message)
+      if which.empty?
+        render_error(:unprocessable_entity, message, status: 'error')
+      end
     end
 
     def active_for_authentication?

@@ -2,7 +2,6 @@
 
 module DeviseJwtAuth
   class ConfirmationsController < DeviseJwtAuth::ApplicationController
-
     def show
       @resource = resource_class.confirm_by_token(resource_params[:confirmation_token])
 
@@ -17,14 +16,14 @@ module DeviseJwtAuth
           # redirect_headers = build_redirect_headers(token.token,
           #                                           token.client,
           #                                           redirect_header_options)
-          
-          redirect_headers = signed_in_resource.create_named_token_pair.
-                             merge(redirect_header_options)
+
+          redirect_headers = signed_in_resource.create_named_token_pair
+                               .merge(redirect_header_options)
 
           # TODO: add a refresh token cookie in the response.
           update_refresh_token_cookie
-          
-          #redirect_to_link = signed_in_resource.build_auth_url(redirect_url, redirect_headers)
+
+          # redirect_to_link = signed_in_resource.build_auth_url(redirect_url, redirect_headers)
           redirect_to_link = DeviseJwtAuth::Url.generate(redirect_url, redirect_headers)
         else
           redirect_to_link = DeviseJwtAuth::Url.generate(redirect_url, redirect_header_options)
@@ -46,11 +45,11 @@ module DeviseJwtAuth
       return render_not_found_error unless @resource
 
       @resource.send_confirmation_instructions({
-        redirect_url: redirect_url,
-        client_config: resource_params[:config_name]
-      })
+                                                 redirect_url: redirect_url,
+                                                 client_config: resource_params[:config_name]
+                                               })
 
-      return render_create_success
+      render_create_success
     end
 
     protected
@@ -61,8 +60,8 @@ module DeviseJwtAuth
 
     def render_create_success
       render json: {
-          success: true,
-          message: I18n.t('devise_jwt_auth.confirmations.sended', email: @email)
+        success: true,
+        message: I18n.t('devise_jwt_auth.confirmations.sended', email: @email)
       }
     end
 
@@ -83,6 +82,5 @@ module DeviseJwtAuth
         DeviseJwtAuth.default_confirm_success_url
       )
     end
-
   end
 end

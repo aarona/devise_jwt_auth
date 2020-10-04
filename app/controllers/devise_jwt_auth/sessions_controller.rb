@@ -25,6 +25,7 @@ module DeviseJwtAuth
         if (@resource.respond_to?(:valid_for_authentication?) && !@resource.valid_for_authentication? { valid_password }) || !valid_password
           return render_create_error_bad_credentials
         end
+
         @token = @resource.create_token
         @resource.save
 
@@ -72,11 +73,11 @@ module DeviseJwtAuth
 
       # iterate thru allowed auth keys, use first found
       resource_class.authentication_keys.each do |k|
-        if resource_params[k]
-          auth_val = resource_params[k]
-          auth_key = k
-          break
-        end
+        next unless resource_params[k]
+
+        auth_val = resource_params[k]
+        auth_key = k
+        break
       end
 
       # honor devise configuration for case_insensitive_keys
@@ -112,7 +113,7 @@ module DeviseJwtAuth
 
     def render_destroy_success
       render json: {
-        success:true
+        success: true
       }, status: 200
     end
 

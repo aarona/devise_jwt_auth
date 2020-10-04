@@ -14,6 +14,7 @@ module DeviseJwtAuth
     end
 
     protected
+
     def resource_data
       response_data = @resource.as_json
       response_data['type'] = @resource.class.name.parameterize if json_api?
@@ -23,10 +24,12 @@ module DeviseJwtAuth
     def render_refresh_token_success
       response_data = {
         status: 'success',
-        data:   resource_data
+        data: resource_data
       }
 
-      response_data.merge!(@resource.create_named_token_pair) if active_for_authentication?
+      if active_for_authentication?
+        response_data.merge!(@resource.create_named_token_pair)
+      end
       render json: response_data
     end
 

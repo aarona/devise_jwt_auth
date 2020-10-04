@@ -8,8 +8,7 @@ class DeviseJwtAuth::RefreshTokenControllerTest < ActionDispatch::IntegrationTes
       before do
         @resource = create(:user, :confirmed)
         @auth_headers = get_cookie_header(DeviseJwtAuth.refresh_token_name,
-                                          @resource.create_refresh_token
-        )
+                                          @resource.create_refresh_token)
         get '/auth/refresh_token', params: {}, headers: @auth_headers
         @resp = JSON.parse(response.body)
       end
@@ -22,13 +21,12 @@ class DeviseJwtAuth::RefreshTokenControllerTest < ActionDispatch::IntegrationTes
         assert @resp[DeviseJwtAuth.access_token_name]
       end
     end
-    
+
     describe 'unconfirmed user' do
       before do
         @resource = create(:user)
         @auth_headers = get_cookie_header(DeviseJwtAuth.refresh_token_name,
-                                          @resource.create_refresh_token
-        )
+                                          @resource.create_refresh_token)
         get '/auth/refresh_token', params: {}, headers: @auth_headers
         @resp = JSON.parse(response.body)
       end
@@ -41,19 +39,18 @@ class DeviseJwtAuth::RefreshTokenControllerTest < ActionDispatch::IntegrationTes
         assert_nil @resp[DeviseJwtAuth.access_token_name]
       end
     end
-    
+
     describe 'an expired token' do
       before do
         @resource = create(:user, :confirmed)
         @exp = (Time.now - 1.hour).to_i
         @expired_token = @resource.create_refresh_token(exp: @exp)
         @auth_headers = get_cookie_header(DeviseJwtAuth.refresh_token_name,
-                                          @expired_token
-        )
+                                          @expired_token)
         get '/auth/refresh_token', params: {}, headers: @auth_headers
         @resp = JSON.parse(response.body)
       end
-      
+
       it 'response error' do
         assert_equal 401, response.status
       end
@@ -66,12 +63,11 @@ class DeviseJwtAuth::RefreshTokenControllerTest < ActionDispatch::IntegrationTes
     describe 'an invalid refresh token' do
       before do
         @auth_headers = get_cookie_header(DeviseJwtAuth.refresh_token_name,
-                                          "invalid-token"
-        )
+                                          'invalid-token')
         get '/auth/refresh_token', params: {}, headers: @auth_headers
         @resp = JSON.parse(response.body)
       end
-      
+
       it 'response error' do
         assert_equal 401, response.status
       end
