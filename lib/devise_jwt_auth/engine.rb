@@ -33,7 +33,7 @@ module DeviseJwtAuth
 
   self.send_new_access_token_on_each_request     = false
   self.refresh_token_lifespan                    = 1.week
-  self.access_token_lifespan                     = 1.day
+  self.access_token_lifespan                     = 15.minutes
   self.refresh_token_name                        = 'refresh-token'
   self.access_token_name                         = 'access-token'
   self.refresh_token_encryption_key              = 'your-refresh-token-secret-key-here'
