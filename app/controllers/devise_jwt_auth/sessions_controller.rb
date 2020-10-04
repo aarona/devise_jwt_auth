@@ -81,9 +81,7 @@ module DeviseJwtAuth
       end
 
       # honor devise configuration for case_insensitive_keys
-      if resource_class.case_insensitive_keys.include?(auth_key)
-        auth_val.downcase!
-      end
+      auth_val.downcase! if resource_class.case_insensitive_keys.include?(auth_key)
 
       { key: auth_key, val: auth_val }
     end

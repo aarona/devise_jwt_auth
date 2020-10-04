@@ -131,9 +131,8 @@ module DeviseJwtAuth
         data: resource_data
       }
 
-      if active_for_authentication?
-        response_data.merge!(@resource.create_named_token_pair)
-      end
+      response_data.merge!(@resource.create_named_token_pair) if active_for_authentication?
+
       render json: response_data
     end
 
@@ -197,9 +196,7 @@ module DeviseJwtAuth
     end
 
     def validate_post_data(which, message)
-      if which.empty?
-        render_error(:unprocessable_entity, message, status: 'error')
-      end
+      render_error(:unprocessable_entity, message, status: 'error') if which.empty?
     end
 
     def active_for_authentication?

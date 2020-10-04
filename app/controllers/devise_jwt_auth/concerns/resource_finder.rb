@@ -8,13 +8,9 @@ module DeviseJwtAuth::Concerns::ResourceFinder
     # honor Devise configuration for case_insensitive keys
     q_value = resource_params[field.to_sym]
 
-    if resource_class.case_insensitive_keys.include?(field.to_sym)
-      q_value.downcase!
-    end
+    q_value.downcase! if resource_class.case_insensitive_keys.include?(field.to_sym)
 
-    if resource_class.strip_whitespace_keys.include?(field.to_sym)
-      q_value.strip!
-    end
+    q_value.strip! if resource_class.strip_whitespace_keys.include?(field.to_sym)
 
     q_value
   end

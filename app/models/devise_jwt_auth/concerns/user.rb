@@ -22,9 +22,7 @@ module DeviseJwtAuth::Concerns::User
       include DeviseJwtAuth::Concerns::MongoidSupport
     end
 
-    if DeviseJwtAuth.default_callbacks
-      include DeviseJwtAuth::Concerns::UserOmniauthCallbacks
-    end
+    include DeviseJwtAuth::Concerns::UserOmniauthCallbacks if DeviseJwtAuth.default_callbacks
 
     # don't use default devise email validation
     def email_required?

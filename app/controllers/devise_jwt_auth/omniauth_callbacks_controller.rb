@@ -7,7 +7,6 @@ module DeviseJwtAuth
     before_action :validate_auth_origin_url_param
 
     skip_before_action :set_user_by_jwt_token, raise: false
-    # skip_after_action :update_auth_header
 
     # intermediary route for successful omniauth authentication. omniauth does
     # not support multiple models, so we must resort to this terrible hack.
@@ -28,15 +27,17 @@ module DeviseJwtAuth
     def get_redirect_route(devise_mapping)
       path = "#{Devise.mappings[devise_mapping.to_sym].fullpath}/#{params[:provider]}/callback"
       klass = request.scheme == 'https' ? URI::HTTPS : URI::HTTP
-      redirect_route = klass.build(host: request.host, port: request.port, path: path).to_s
+      klass.build(host: request.host, port: request.port, path: path).to_s
     end
 
     def get_devise_mapping
       # derive target redirect route from 'resource_class' param, which was set
       # before authentication.
-      devise_mapping = [request.env['omniauth.params']['namespace_name'],
-                        request.env['omniauth.params']['resource_class'].underscore.gsub('/', '_')].compact.join('_')
-    rescue NoMethodError => e
+      [
+        request.env['omniauth.params']['namespace_name'],
+        request.env['omniauth.params']['resource_class'].underscore.gsub('/', '_')
+      ].compact.join('_')
+    rescue NoMethodError
       default_devise_mapping
     end
 
@@ -78,9 +79,9 @@ module DeviseJwtAuth
     end
 
     def validate_auth_origin_url_param
-      if auth_origin_url && blacklisted_redirect_url?(auth_origin_url)
-        render_error_not_allowed_auth_origin_url
-      end
+      return unless auth_origin_url && blacklisted_redirect_url?(auth_origin_url)
+
+      render_error_not_allowed_auth_origin_url
     end
 
     protected
@@ -148,9 +149,7 @@ module DeviseJwtAuth
     end
 
     def auth_origin_url
-      if unsafe_auth_origin_url && blacklisted_redirect_url?(unsafe_auth_origin_url)
-        return nil
-      end
+      return nil if unsafe_auth_origin_url && blacklisted_redirect_url?(unsafe_auth_origin_url)
 
       unsafe_auth_origin_url
     end

@@ -36,9 +36,7 @@ module DeviseJwtAuth
 
     def params_for_resource(resource)
       devise_parameter_sanitizer.instance_values['permitted'][resource].each do |type|
-        unless request.headers[type.to_s].nil?
-          params[type.to_s] ||= request.headers[type.to_s]
-        end
+        params[type.to_s] ||= request.headers[type.to_s] unless request.headers[type.to_s].nil?
       end
       devise_parameter_sanitizer.instance_values['permitted'][resource]
     end

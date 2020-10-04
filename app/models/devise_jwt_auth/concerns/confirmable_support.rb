@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# ActiveSupport Concern for confirming users
 module DeviseJwtAuth::Concerns::ConfirmableSupport
   extend ActiveSupport::Concern
 

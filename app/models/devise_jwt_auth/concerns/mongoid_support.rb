@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# ActiveSupport Concern for Mongoid support
 module DeviseJwtAuth::Concerns::MongoidSupport
   extend ActiveSupport::Concern
 

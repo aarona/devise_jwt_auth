@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Dumping and loading serialized tokens in JSON format.
 module DeviseJwtAuth::Concerns::TokensSerialization
   # Serialization hash to json
   def self.dump(object)

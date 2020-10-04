@@ -11,16 +11,9 @@ module DeviseJwtAuth
         redirect_header_options = { account_confirmation_success: true }
 
         if signed_in?(resource_name)
-          # token = signed_in_resource.create_token
-
-          # redirect_headers = build_redirect_headers(token.token,
-          #                                           token.client,
-          #                                           redirect_header_options)
-
           redirect_headers = signed_in_resource.create_named_token_pair
                                .merge(redirect_header_options)
 
-          # TODO: add a refresh token cookie in the response.
           update_refresh_token_cookie
 
           # redirect_to_link = signed_in_resource.build_auth_url(redirect_url, redirect_headers)

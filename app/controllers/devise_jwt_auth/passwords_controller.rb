@@ -3,7 +3,6 @@
 module DeviseJwtAuth
   class PasswordsController < DeviseJwtAuth::ApplicationController
     before_action :validate_redirect_url_param, only: [:create, :edit]
-    # skip_after_action :update_auth_header, only: [:create, :edit]
 
     # this action is responsible for generating password reset tokens and sending emails
     def create
@@ -41,9 +40,8 @@ module DeviseJwtAuth
         # token = @resource.create_token unless require_client_password_reset_token?
 
         # ensure that user is confirmed
-        if confirmable_enabled? && !@resource.confirmed_at
-          @resource.skip_confirmation!
-        end
+        @resource.skip_confirmation! if confirmable_enabled? && !@resource.confirmed_at
+
         # allow user to change password once without current_password
         @resource.allow_password_change = true if recoverable_enabled?
         @resource.save!
@@ -84,9 +82,7 @@ module DeviseJwtAuth
       return render_update_error_unauthorized unless @resource
 
       # make sure account doesn't use oauth2 provider
-      unless @resource.provider == 'email'
-        return render_update_error_password_not_required
-      end
+      return render_update_error_password_not_required unless @resource.provider == 'email'
 
       # ensure that password params were sent
       unless password_resource_params[:password] && password_resource_params[:password_confirmation]
@@ -206,9 +202,7 @@ module DeviseJwtAuth
 
       return render_create_error_missing_redirect_url unless @redirect_url
 
-      if blacklisted_redirect_url?(@redirect_url)
-        render_error_not_allowed_redirect_url
-      end
+      render_error_not_allowed_redirect_url if blacklisted_redirect_url?(@redirect_url)
     end
 
     def reset_password_token_as_raw?(recoverable)

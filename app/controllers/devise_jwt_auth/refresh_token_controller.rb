@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module DeviseJwtAuth
+  # Controller that handles sending refresh tokens.
   class RefreshTokenController < DeviseJwtAuth::ApplicationController
     before_action :set_user_by_refresh_token
 
@@ -27,9 +28,8 @@ module DeviseJwtAuth
         data: resource_data
       }
 
-      if active_for_authentication?
-        response_data.merge!(@resource.create_named_token_pair)
-      end
+      response_data.merge!(@resource.create_named_token_pair) if active_for_authentication?
+
       render json: response_data
     end
 
