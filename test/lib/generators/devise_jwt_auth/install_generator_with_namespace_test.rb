@@ -2,12 +2,8 @@
 
 require 'test_helper'
 require 'fileutils'
-if DEVISE_JWT_AUTH_ORM == :active_record
-  require 'generators/devise_jwt_auth/install_generator'
-end
-if DEVISE_JWT_AUTH_ORM == :mongoid
-  require 'generators/devise_jwt_auth/install_mongoid_generator'
-end
+require 'generators/devise_jwt_auth/install_generator' if DEVISE_JWT_AUTH_ORM == :active_record
+require 'generators/devise_jwt_auth/install_mongoid_generator' if DEVISE_JWT_AUTH_ORM == :mongoid
 
 module DeviseJwtAuth
   class InstallGeneratorTest < Rails::Generators::TestCase

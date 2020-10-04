@@ -34,9 +34,7 @@ end
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 
-  if DEVISE_JWT_AUTH_ORM == :active_record
-    ActiveRecord::Migration.check_pending!
-  end
+  ActiveRecord::Migration.check_pending! if DEVISE_JWT_AUTH_ORM == :active_record
 
   strategies = { active_record: :transaction,
                  mongoid: :truncation }

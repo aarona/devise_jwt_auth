@@ -11,7 +11,7 @@ module FavoriteColor
   def ensure_correct_favorite_color
     return unless favorite_color && (favorite_color != '')
 
-    if ApplicationHelper::COLOR_NAMES.any? { |s| s.casecmp(favorite_color).zero? }; return end
+    return if ApplicationHelper::COLOR_NAMES.any? { |s| s.casecmp(favorite_color).zero? }
 
     matches = ApplicationHelper::COLOR_SEARCH.search(favorite_color)
     closest_match = matches.last[:string]
