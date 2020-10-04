@@ -12,7 +12,6 @@ module ActionDispatch::Routing
       registrations_ctrl     = opts[:controllers][:registrations] || 'devise_jwt_auth/registrations'
       passwords_ctrl         = opts[:controllers][:passwords] || 'devise_jwt_auth/passwords'
       confirmations_ctrl     = opts[:controllers][:confirmations] || 'devise_jwt_auth/confirmations'
-      # token_validations_ctrl = opts[:controllers][:token_validations] || 'devise_jwt_auth/token_validations'
       refresh_token_ctrl     = opts[:controllers][:refresh_token] || 'devise_jwt_auth/refresh_token'
       omniauth_ctrl          = opts[:controllers][:omniauth_callbacks] || 'devise_jwt_auth/omniauth_callbacks'
       unlocks_ctrl           = opts[:controllers][:unlocks] || 'devise_jwt_auth/unlocks'
@@ -60,7 +59,6 @@ module ActionDispatch::Routing
           unless opts[:skip].include?(:refresh_token)
             get "#{full_path}/refresh_token", controller: refresh_token_ctrl.to_s, action: 'show'
           end
-          # get "#{full_path}/validate_token", controller: token_validations_ctrl.to_s, action: 'validate_token' if !opts[:skip].include?(:token_validations)
 
           # omniauth routes. only define if omniauth is installed and not skipped.
           if defined?(::OmniAuth) && !opts[:skip].include?(:omniauth_callbacks)

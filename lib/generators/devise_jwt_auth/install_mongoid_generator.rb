@@ -3,6 +3,7 @@
 require_relative 'install_generator_helpers'
 
 module DeviseJwtAuth
+  # Adds Mongoid settings to ORM
   class InstallMongoidGenerator < Rails::Generators::Base
     include DeviseJwtAuth::InstallGeneratorHelpers
 
