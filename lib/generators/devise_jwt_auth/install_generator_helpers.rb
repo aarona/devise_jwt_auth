@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 module DeviseJwtAuth
+  # Helper methods for installation generators.
   module InstallGeneratorHelpers
     class << self
       def included(mod)
@@ -19,15 +22,19 @@ module DeviseJwtAuth
             if File.exist?(File.join(destination_root, fname))
               if parse_file_for_line(fname, line)
                 say_status('skipped', 'Concern is already included in the application controller.')
-              elsif is_rails_api?
-                inject_into_file fname, after: "class ApplicationController < ActionController::API\n" do <<-'RUBY'
+              elsif rails_api?
+                inject_into_file fname,
+                                 after: "class ApplicationController < ActionController::API\n" do
+                  <<-'RUBY'
         include DeviseJwtAuth::Concerns::SetUserByToken
-                RUBY
+                  RUBY
                 end
               else
-                inject_into_file fname, after: "class ApplicationController < ActionController::Base\n" do <<-'RUBY'
+                inject_into_file fname,
+                                 after: "class ApplicationController < ActionController::Base\n" do
+                  <<-'RUBY'
         include DeviseJwtAuth::Concerns::SetUserByToken
-                RUBY
+                  RUBY
                 end
               end
             else
@@ -69,7 +76,7 @@ module DeviseJwtAuth
 
           def ip_column
             # Padded with spaces so it aligns nicely with the rest of the columns.
-            "%-8s" % (inet? ? "inet" : "string")
+            format('%-8s', (inet? ? 'inet' : 'string'))
           end
 
           def inet?
@@ -100,7 +107,7 @@ module DeviseJwtAuth
             match
           end
 
-          def is_rails_api?
+          def rails_api?
             fname = 'app/controllers/application_controller.rb'
             line = 'class ApplicationController < ActionController::API'
             parse_file_for_line(fname, line)

@@ -59,7 +59,7 @@ class DeviseJwtAuth::ConfirmationsControllerTest < ActionController::TestCase
           end
 
           test 'redirect url includes token params' do
-            assert @token_params.all? { |param| response.body.include?(param) }
+            assert(@token_params.all? { |param| response.body.include?(param) })
             assert response.body.include?('account_confirmation_success')
           end
         end
@@ -84,7 +84,7 @@ class DeviseJwtAuth::ConfirmationsControllerTest < ActionController::TestCase
           end
 
           test 'redirect url does not include token params' do
-            refute @token_params.any? { |param| response.body.include?(param) }
+            refute(@token_params.any? { |param| response.body.include?(param) })
             assert response.body.include?('account_confirmation_success')
           end
         end
@@ -92,9 +92,9 @@ class DeviseJwtAuth::ConfirmationsControllerTest < ActionController::TestCase
         describe 'resend confirmation' do
           before do
             post :create,
-                params: { email: @new_user.email,
-                          redirect_url: @redirect_url },
-                xhr: true
+                 params: { email: @new_user.email,
+                           redirect_url: @redirect_url },
+                 xhr: true
             @resource = assigns(:resource)
 
             @mail = ActionMailer::Base.deliveries.last

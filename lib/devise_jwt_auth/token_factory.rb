@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require 'jwt'
 
 module DeviseJwtAuth
   # A token management factory which allow generate token objects and check them.
   module TokenFactory
-
     def self.create_refresh_token(payload)
       if payload[:exp].blank? && payload['exp'].blank?
         payload[:exp] = (Time.zone.now + DeviseJwtAuth.refresh_token_lifespan).to_i
@@ -33,7 +34,7 @@ module DeviseJwtAuth
     rescue TypeError
       {}
     end
-    
+
     def self.decode_access_token(token)
       JWT.decode(token, DeviseJwtAuth.access_token_encryption_key).first
     rescue JWT::ExpiredSignature

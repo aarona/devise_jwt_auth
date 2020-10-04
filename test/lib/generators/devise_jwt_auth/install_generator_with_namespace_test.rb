@@ -14,7 +14,7 @@ module DeviseJwtAuth
     # The namespaced user model for testing
     let(:user_class) { 'Azpire::V1::HumanResource::User' }
     let(:namespace_path) { user_class.underscore }
-    let(:table_name) { user_class.pluralize.underscore.gsub('/','_') }
+    let(:table_name) { user_class.pluralize.underscore.gsub('/', '_') }
 
     describe 'user model with namespace, clean install' do
       setup :prepare_destination
@@ -49,17 +49,6 @@ module DeviseJwtAuth
             assert_migration "db/migrate/devise_jwt_auth_create_#{table_name}.rb"
           end
         end
-
-=begin
-        test 'add primary key type with rails 5 when specified in rails generator' do
-          run_generator %W[#{user_class} auth --primary_key_type=uuid --force]
-          if Rails::VERSION::MAJOR >= 5
-            assert_migration "db/migrate/devise_jwt_auth_create_#{table_name}.rb", /create_table\(:#{table_name}, id: :uuid\) do/
-          else
-            assert_migration "db/migrate/devise_jwt_auth_create_#{table_name}.rb", /create_table\(:#{table_name}\) do/
-          end
-        end
-=end
       end
     end
 
@@ -77,15 +66,12 @@ module DeviseJwtAuth
         case DEVISE_JWT_AUTH_ORM
         when :active_record
           # account for rails version 5
-          active_record_needle = (Rails::VERSION::MAJOR == 5) ? 'ApplicationRecord' : 'ActiveRecord::Base'
+          active_record_needle = Rails::VERSION::MAJOR == 5 ? 'ApplicationRecord' : 'ActiveRecord::Base'
 
           @f = File.open(@fname, 'w') do |f|
             f.write <<-RUBY
               class User < #{active_record_needle}
-
-                def whatever
-                  puts 'whatever'
-                end
+                def whatever; puts 'whatever'; end
               end
             RUBY
           end
@@ -93,10 +79,7 @@ module DeviseJwtAuth
           @f = File.open(@fname, 'w') do |f|
             f.write <<-'RUBY'
               class User
-
-                def whatever
-                  puts 'whatever'
-                end
+                def whatever; puts 'whatever'; end
               end
             RUBY
           end

@@ -5,6 +5,16 @@ AllCops:
     - 'coverage/**/*'
     - 'test/dummy/tmp/**/*'
     - 'test/dummy/log/**/*'
+  NewCops: enable
+  TargetRubyVersion: 2.4
+
+Bundler/DuplicatedGem:
+  Exclude:
+    - 'Gemfile'
+
+Metrics/ClassLength:
+  Exclude:
+    - 'test/**/*'
 
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.
@@ -91,17 +101,17 @@ Metrics/BlockLength:
     - 'lib/devise_jwt_auth/engine.rb'
     - 'test/dummy/config/**/*'
     - 'test/dummy/db/**/*'
+    - 'test/factories/**/*'
   ExcludedMethods:
     - describe
     - draw
     - namespace
     - devise_scope
     - unnest_namespace
-  Max: 25
 
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
-Metrics/LineLength:
+Layout/LineLength:
   inherit_mode:
     merge:
       - Exclude
@@ -109,6 +119,6 @@ Metrics/LineLength:
     - 'test/**/*'
     - 'Guardfile'
     - 'devise_jwt_auth.gemspec'
+    - 'lib/generators/devise_jwt_auth/install_generator_helpers.rb'
   IgnoredPatterns:
     - '(\A|\s)#'
-  Max: 80

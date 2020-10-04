@@ -95,7 +95,7 @@ class DeviseJwtAuth::UnlocksControllerTest < ActionController::TestCase
             @data = JSON.parse(response.body)
 
             @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
-            @mail_reset_token  = @mail.body.match(/unlock_token=(.*)\"/)[1]
+            @mail_reset_token  = @mail.body.match(/unlock_token=(.*)"/)[1]
           end
 
           test 'response should return success status' do
@@ -161,7 +161,7 @@ class DeviseJwtAuth::UnlocksControllerTest < ActionController::TestCase
           before do
             @resource_class = LockableUser
             @request_params = {
-              email:        @resource.email.upcase
+              email: @resource.email.upcase
             }
           end
 

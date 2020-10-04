@@ -5,15 +5,15 @@ require 'test_helper'
 class DeviseJwtAuth::TokenFactoryTest < ActiveSupport::TestCase
   describe 'TokenFactory module' do
     let(:tf) { DeviseJwtAuth::TokenFactory }
-    let(:token_regexp) { /^[A-Za-z0-9\-_=]+\.[A-Za-z0-9\-_=]+\.?[A-Za-z0-9\-_.+\/=]*$/ }
-    
+    let(:token_regexp) { %r{^[A-Za-z0-9\-_=]+\.[A-Za-z0-9\-_=]+\.?[A-Za-z0-9\-_.+/=]*$} }
+
     it 'should be defined' do
       assert_equal(tf.present?, true)
       assert_kind_of(Module, tf)
     end
-    
+
     describe 'interface' do
-      let(:payload) { { foo: 'test'} }
+      let(:payload) { { foo: 'test' } }
       let(:future_exp) { (Time.zone.now + 1.hour).to_i }
       let(:past_exp) { (Time.zone.now - 1.hour).to_i }
 
@@ -50,7 +50,7 @@ class DeviseJwtAuth::TokenFactoryTest < ActiveSupport::TestCase
           result = tf.decode_refresh_token(token)
           assert_nil result['exp']
         end
-        
+
         it 'invalidates bogus token' do
           result = tf.decode_refresh_token('bogus token')
           assert_empty result
@@ -91,7 +91,7 @@ class DeviseJwtAuth::TokenFactoryTest < ActiveSupport::TestCase
           result = tf.decode_access_token(token)
           assert_nil result['exp']
         end
-        
+
         it 'invalidates bogus token' do
           result = tf.decode_access_token('bogus token')
           assert_empty result

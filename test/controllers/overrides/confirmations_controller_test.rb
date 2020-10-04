@@ -20,7 +20,7 @@ class Overrides::ConfirmationsControllerTest < ActionDispatch::IntegrationTest
       @new_user.send_confirmation_instructions(redirect_url: @redirect_url)
 
       @mail = ActionMailer::Base.deliveries.last
-      @confirmation_path = @mail.body.match(/localhost([^\"]*)\"/)[1]
+      @confirmation_path = @mail.body.match(/localhost([^"]*)"/)[1]
 
       # visit confirmation link
       get @confirmation_path

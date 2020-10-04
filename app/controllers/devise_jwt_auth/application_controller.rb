@@ -20,17 +20,17 @@ module DeviseJwtAuth
       DeviseJwtAuth.redirect_whitelist && !DeviseJwtAuth::Url.whitelisted?(redirect_url)
     end
 
-    def build_redirect_headers(access_token, client, redirect_header_options = {})
+    def build_redirect_headers(access_token, _client, redirect_header_options = {})
       {
         # DeviseJwtAuth.headers_names[:"access-token"] => access_token,
         # DeviseJwtAuth.headers_names[:"client"] => client,
-        :config => params[:config],
+        config: params[:config],
 
         # Legacy parameters which may be removed in a future release.
         # Consider using "client" and "access-token" in client code.
         # See: github.com/lynndylanhurley/devise_jwt_auth/issues/993
         # :client_id => client,
-        :token => access_token
+        token: access_token
       }.merge(redirect_header_options)
     end
 
@@ -42,20 +42,23 @@ module DeviseJwtAuth
     end
 
     def resource_class(m = nil)
-      if m
-        mapping = Devise.mappings[m]
-      else
-        mapping = Devise.mappings[resource_name] || Devise.mappings.values.first
-      end
+      mapping = if m
+                  Devise.mappings[m]
+                else
+                  Devise.mappings[resource_name] || Devise.mappings.values.first
+                end
 
       mapping.to
     end
 
     def json_api?
       return false unless defined?(ActiveModel::Serializer)
-      return ActiveModel::Serializer.setup do |config|
-        config.adapter == :json_api
-      end if ActiveModel::Serializer.respond_to?(:setup)
+
+      if ActiveModel::Serializer.respond_to?(:setup)
+        return ActiveModel::Serializer.setup do |config|
+          config.adapter == :json_api
+        end
+      end
       ActiveModelSerializers.config.adapter == :json_api
     end
 

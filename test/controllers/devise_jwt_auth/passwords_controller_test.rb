@@ -66,7 +66,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
         describe 'for edit' do
           before do
             get_reset_token
-            get :edit, params: { reset_password_token: @mail_reset_token}
+            get :edit, params: { reset_password_token: @mail_reset_token }
             @data = JSON.parse(response.body)
           end
 
@@ -145,7 +145,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
 
             @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
             @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=([^&]*)&/)[1])
-            @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)\"/)[1]
+            @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)"/)[1]
           end
 
           test 'response should return success status' do
@@ -237,7 +237,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
           before do
             @resource_class = User
             @request_params = {
-              email:        @resource.email.upcase,
+              email: @resource.email.upcase,
               redirect_url: @redirect_url
             }
           end
@@ -264,13 +264,12 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
 
             @mail = ActionMailer::Base.deliveries.last
             @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=([^&]*)&/)[1])
-            @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)\"/)[1]
+            @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)"/)[1]
 
             @resource.reload
           end
 
           describe 'reset_password_token is valid' do
-
             test 'mail_reset_token should be the same as reset_password_token' do
               assert_equal Devise.token_generator.digest(self, :reset_password_token, @mail_reset_token), @resource.reset_password_token
             end
@@ -492,7 +491,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
 
             @mail = ActionMailer::Base.deliveries.last
             @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=([^&]*)&/)[1])
-            @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)\"/)[1]
+            @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)"/)[1]
 
             # confirm via password reset email link
             get :edit, params: { reset_password_token: @mail_reset_token,
@@ -568,10 +567,9 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
             DeviseJwtAuth.require_client_password_reset_token = true
             @redirect_url = 'http://client-app.dev'
             get_reset_token
-            edit_url = CGI.unescape(@mail.body.match(/href=\"(.+)\"/)[1])
+            edit_url = CGI.unescape(@mail.body.match(/href="(.+)"/)[1])
             query_parts = Rack::Utils.parse_nested_query(URI.parse(edit_url).query)
             get :edit, params: query_parts
-            
           end
 
           test 'reponse should be redirect' do
@@ -668,8 +666,8 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
 
         describe 'without valid headers' do
           before do
-           @auth_headers = @resource.create_named_token_pair
-           new_password = Faker::Internet.password
+            @auth_headers = @resource.create_named_token_pair
+            new_password = Faker::Internet.password
 
             put :update, params: { password: new_password,
                                    password_confirmation: new_password }
@@ -856,8 +854,8 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
         @config_name  = 'altUser'
 
         params = { email: @resource.email,
-                                redirect_url: @redirect_url,
-                                config_name: @config_name }
+                   redirect_url: @redirect_url,
+                   config_name: @config_name }
         get_reset_token params
       end
 
@@ -875,7 +873,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
 
       @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
       @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=([^&]*)&/)[1])
-      @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)\"/)[1]
+      @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)"/)[1]
     end
   end
 end

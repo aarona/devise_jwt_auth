@@ -22,7 +22,7 @@ module DeviseJwtAuth
         )
 
         if @resource.errors.empty?
-          return render_create_success
+          render_create_success
         else
           render_create_error @resource.errors
         end
@@ -38,8 +38,8 @@ module DeviseJwtAuth
         yield @resource if block_given?
 
         redirect_header_options = { unlock: true }
-        redirect_headers = @resource.create_named_token_pair.
-                             merge(redirect_header_options)
+        redirect_headers = @resource.create_named_token_pair
+                             .merge(redirect_header_options)
 
         update_refresh_token_cookie
         redirect_url = after_unlock_path_for(@resource)
@@ -52,7 +52,8 @@ module DeviseJwtAuth
     end
 
     private
-    def after_unlock_path_for(resource)
+
+    def after_unlock_path_for(_resource)
       # TODO: This should probably be a configuration option at the very least.
       # Use confirmation controller / tests as a template for building out this feature.
       '/'

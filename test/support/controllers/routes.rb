@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Module
   include Minitest::Spec::DSL
 end
@@ -31,12 +33,12 @@ module OverridesControllersRoutes
   before do
     Rails.application.routes.draw do
       mount_devise_jwt_auth_for 'User', at: 'evil_user_auth', controllers: {
-        confirmations:      'overrides/confirmations',
-        passwords:          'overrides/passwords',
+        confirmations: 'overrides/confirmations',
+        passwords: 'overrides/passwords',
         omniauth_callbacks: 'overrides/omniauth_callbacks',
-        registrations:      'overrides/registrations',
-        sessions:           'overrides/sessions',
-        refresh_token:      'overrides/refresh_token'
+        registrations: 'overrides/registrations',
+        sessions: 'overrides/sessions',
+        refresh_token: 'overrides/refresh_token'
       }
     end
   end

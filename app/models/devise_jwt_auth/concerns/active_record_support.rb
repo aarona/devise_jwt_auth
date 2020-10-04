@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require_relative 'tokens_serialization'
 
+# ActiveSupport Concern for serializing tokens
 module DeviseJwtAuth::Concerns::ActiveRecordSupport
   extend ActiveSupport::Concern
 

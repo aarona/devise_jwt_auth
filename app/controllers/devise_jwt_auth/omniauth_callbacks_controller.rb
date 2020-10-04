@@ -7,12 +7,10 @@ module DeviseJwtAuth
     before_action :validate_auth_origin_url_param
 
     skip_before_action :set_user_by_jwt_token, raise: false
-    # skip_after_action :update_auth_header
 
     # intermediary route for successful omniauth authentication. omniauth does
     # not support multiple models, so we must resort to this terrible hack.
     def redirect_callbacks
-
       # derive target redirect route from 'resource_class' param, which was set
       # before authentication.
       devise_mapping = get_devise_mapping
@@ -29,15 +27,17 @@ module DeviseJwtAuth
     def get_redirect_route(devise_mapping)
       path = "#{Devise.mappings[devise_mapping.to_sym].fullpath}/#{params[:provider]}/callback"
       klass = request.scheme == 'https' ? URI::HTTPS : URI::HTTP
-      redirect_route = klass.build(host: request.host, port: request.port, path: path).to_s
+      klass.build(host: request.host, port: request.port, path: path).to_s
     end
 
     def get_devise_mapping
-       # derive target redirect route from 'resource_class' param, which was set
-       # before authentication.
-       devise_mapping = [request.env['omniauth.params']['namespace_name'],
-                         request.env['omniauth.params']['resource_class'].underscore.gsub('/', '_')].compact.join('_')
-    rescue NoMethodError => err
+      # derive target redirect route from 'resource_class' param, which was set
+      # before authentication.
+      [
+        request.env['omniauth.params']['namespace_name'],
+        request.env['omniauth.params']['resource_class'].underscore.gsub('/', '_')
+      ].compact.join('_')
+    rescue NoMethodError
       default_devise_mapping
     end
 
@@ -45,13 +45,13 @@ module DeviseJwtAuth
     # find the mapping in `omniauth.params`.
     #
     # One example use-case here is for IDP-initiated SAML login.  In that
-    # case, there will have been no initial request in which to save 
+    # case, there will have been no initial request in which to save
     # the devise mapping.  If you are in a situation like that, and
     # your app allows for you to determine somehow what the devise
     # mapping should be (because, for example, it is always the same),
     # then you can handle it by overriding this method.
     def default_devise_mapping
-      raise NotImplementedError.new('no default_devise_mapping set')
+      raise NotImplementedError, 'no default_devise_mapping set'
     end
 
     def omniauth_success
@@ -78,10 +78,11 @@ module DeviseJwtAuth
       render_data_or_redirect('authFailure', error: @error)
     end
 
-    def validate_auth_origin_url_param 
-      return render_error_not_allowed_auth_origin_url if auth_origin_url && blacklisted_redirect_url?(auth_origin_url)
+    def validate_auth_origin_url_param
+      return unless auth_origin_url && blacklisted_redirect_url?(auth_origin_url)
+
+      render_error_not_allowed_auth_origin_url
     end
-  
 
     protected
 
@@ -95,19 +96,19 @@ module DeviseJwtAuth
     # are added as query params in our monkey patch to OmniAuth in engine.rb
     def omniauth_params
       unless defined?(@_omniauth_params)
-        if request.env['omniauth.params'] && request.env['omniauth.params'].any?
+        if request.env['omniauth.params']&.any?
           @_omniauth_params = request.env['omniauth.params']
-        elsif session['dta.omniauth.params'] && session['dta.omniauth.params'].any?
+        elsif session['dta.omniauth.params']&.any?
           @_omniauth_params ||= session.delete('dta.omniauth.params')
           @_omniauth_params
         elsif params['omniauth_window_type']
-          @_omniauth_params = params.slice('omniauth_window_type', 'auth_origin_url', 'resource_class', 'origin')
+          @_omniauth_params =
+            params.slice('omniauth_window_type', 'auth_origin_url', 'resource_class', 'origin')
         else
           @_omniauth_params = {}
         end
       end
       @_omniauth_params
-
     end
 
     # break out provider attribute assignment for easy method extension
@@ -120,14 +121,13 @@ module DeviseJwtAuth
     def whitelisted_params
       whitelist = params_for_resource(:sign_up)
 
-      whitelist.inject({}) do |coll, key|
+      whitelist.each_with_object({}) do |key, coll|
         param = omniauth_params[key.to_s]
         coll[key] = param if param
-        coll
       end
     end
 
-    def resource_class(mapping = nil)
+    def resource_class(_mapping = nil)
       if omniauth_params['resource_class']
         omniauth_params['resource_class'].constantize
       elsif params['resource_class']
@@ -149,18 +149,18 @@ module DeviseJwtAuth
       omniauth_params['auth_origin_url'] || omniauth_params['origin']
     end
 
-
     def auth_origin_url
-      if unsafe_auth_origin_url && blacklisted_redirect_url?(unsafe_auth_origin_url)
-        return nil
-      end
-      return unsafe_auth_origin_url
+      return nil if unsafe_auth_origin_url && blacklisted_redirect_url?(unsafe_auth_origin_url)
+
+      unsafe_auth_origin_url
     end
 
     # in the success case, omniauth_window_type is in the omniauth_params.
     # in the failure case, it is in a query param.  See monkey patch above
     def omniauth_window_type
-      omniauth_params.nil? ? params['omniauth_window_type'] : omniauth_params['omniauth_window_type']
+      return params['omniauth_window_type'] if omniauth_params.nil?
+
+      omniauth_params['omniauth_window_type']
     end
 
     # this sesison value is set by the redirect_callbacks method. its purpose
@@ -208,7 +208,10 @@ module DeviseJwtAuth
     end
 
     def render_error_not_allowed_auth_origin_url
-      message = I18n.t('devise_jwt_auth.omniauth.not_allowed_redirect_url', redirect_url: unsafe_auth_origin_url)
+      message =
+        I18n.t('devise_jwt_auth.omniauth.not_allowed_redirect_url',
+               redirect_url: unsafe_auth_origin_url)
+
       render_data_or_redirect('authFailure', error: message)
     end
 
@@ -218,7 +221,6 @@ module DeviseJwtAuth
     end
 
     def render_data_or_redirect(message, data, user_data = {})
-
       # We handle inAppBrowser and newWindow the same, but it is nice
       # to support values in case people need custom implementations for each case
       # (For example, nbrustein does not allow new users to be created if logging in with
@@ -245,7 +247,7 @@ module DeviseJwtAuth
     end
 
     def fallback_render(text)
-        render inline: %Q(
+      render inline: %(
 
             <html>
                     <head></head>
@@ -271,9 +273,7 @@ module DeviseJwtAuth
         provider: auth_hash['provider']
       ).first_or_initialize
 
-      if @resource.new_record?
-        handle_new_resource
-      end
+      handle_new_resource if @resource.new_record?
 
       # sync user info with provider, update/generate auth token
       assign_provider_attrs(@resource, auth_hash)
@@ -287,5 +287,4 @@ module DeviseJwtAuth
       @resource
     end
   end
-
 end

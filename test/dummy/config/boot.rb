@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 unless defined?(DEVISE_JWT_AUTH_ORM)
-  DEVISE_JWT_AUTH_ORM = (ENV["DEVISE_JWT_AUTH_ORM"] || :active_record).to_sym
+  DEVISE_JWT_AUTH_ORM = (ENV['DEVISE_JWT_AUTH_ORM'] || :active_record).to_sym
 end
 
 # Set up gems listed in the Gemfile.

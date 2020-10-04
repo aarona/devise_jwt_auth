@@ -51,12 +51,12 @@ module DeviseJwtAuth
   self.send_confirmation_email                   = false
   self.require_client_password_reset_token       = false
 
-  def self.setup(&block)
+  def self.setup
     yield self
 
     Rails.application.config.after_initialize do
       if defined?(::OmniAuth)
-        ::OmniAuth::config.path_prefix = Devise.omniauth_path_prefix = omniauth_prefix
+        ::OmniAuth.config.path_prefix = Devise.omniauth_path_prefix = omniauth_prefix
 
         # Omniauth currently does not pass along omniauth.params upon failure redirect
         # see also: https://github.com/intridea/omniauth/issues/626
@@ -84,7 +84,7 @@ module DeviseJwtAuth
               fail!(mocked_auth)
             else
               @env['omniauth.auth'] = mocked_auth
-              OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
+              OmniAuth.config.before_callback_phase&.call(@env)
               call_app!
             end
           end

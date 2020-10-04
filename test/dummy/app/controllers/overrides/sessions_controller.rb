@@ -2,7 +2,7 @@
 
 module Overrides
   class SessionsController < DeviseJwtAuth::SessionsController
-    OVERRIDE_PROOF = '(^^,)'.freeze
+    OVERRIDE_PROOF = '(^^,)'
 
     def create
       @resource = resource_class.dta_find_by(email: resource_params[:email])
@@ -16,7 +16,7 @@ module Overrides
           override_proof: OVERRIDE_PROOF
         }.merge(auth_header)
 
-      elsif @resource && (not @resource.confirmed?)
+      elsif @resource && !@resource.confirmed?
         render json: {
           success: false,
           errors: [

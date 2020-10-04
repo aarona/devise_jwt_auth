@@ -8,14 +8,13 @@ module ActionDispatch::Routing
       opts[:skip]        ||= []
 
       # check for ctrl overrides, fall back to defaults
-      sessions_ctrl          = opts[:controllers][:sessions] || 'devise_jwt_auth/sessions'
-      registrations_ctrl     = opts[:controllers][:registrations] || 'devise_jwt_auth/registrations'
-      passwords_ctrl         = opts[:controllers][:passwords] || 'devise_jwt_auth/passwords'
-      confirmations_ctrl     = opts[:controllers][:confirmations] || 'devise_jwt_auth/confirmations'
-      # token_validations_ctrl = opts[:controllers][:token_validations] || 'devise_jwt_auth/token_validations'
-      refresh_token_ctrl     = opts[:controllers][:refresh_token] || 'devise_jwt_auth/refresh_token'
-      omniauth_ctrl          = opts[:controllers][:omniauth_callbacks] || 'devise_jwt_auth/omniauth_callbacks'
-      unlocks_ctrl           = opts[:controllers][:unlocks] || 'devise_jwt_auth/unlocks'
+      sessions_ctrl      = opts[:controllers][:sessions] || 'devise_jwt_auth/sessions'
+      registrations_ctrl = opts[:controllers][:registrations] || 'devise_jwt_auth/registrations'
+      passwords_ctrl     = opts[:controllers][:passwords] || 'devise_jwt_auth/passwords'
+      confirmations_ctrl = opts[:controllers][:confirmations] || 'devise_jwt_auth/confirmations'
+      refresh_token_ctrl = opts[:controllers][:refresh_token] || 'devise_jwt_auth/refresh_token'
+      omniauth_ctrl      = opts[:controllers][:omniauth_callbacks] || 'devise_jwt_auth/omniauth_callbacks'
+      unlocks_ctrl       = opts[:controllers][:unlocks] || 'devise_jwt_auth/unlocks'
 
       # define devise controller mappings
       controllers = { sessions: sessions_ctrl,
@@ -26,7 +25,7 @@ module ActionDispatch::Routing
       controllers[:unlocks] = unlocks_ctrl if unlocks_ctrl
 
       # remove any unwanted devise modules
-      opts[:skip].each{ |item| controllers.delete(item) }
+      opts[:skip].each { |item| controllers.delete(item) }
 
       devise_for resource.pluralize.underscore.gsub('/', '_').to_sym,
                  class_name: resource,
@@ -44,12 +43,12 @@ module ActionDispatch::Routing
 
         # clear scope so controller routes aren't namespaced
         @scope = ActionDispatch::Routing::Mapper::Scope.new(
-          path:         '',
+          path: '',
           shallow_path: '',
-          constraints:  {},
-          defaults:     {},
-          options:      {},
-          parent:       nil
+          constraints: {},
+          defaults: {},
+          options: {},
+          parent: nil
         )
 
         mapping_name = resource.underscore.gsub('/', '_')
@@ -57,22 +56,34 @@ module ActionDispatch::Routing
 
         devise_scope mapping_name.to_sym do
           # path to refresh access tokens
-          get "#{full_path}/refresh_token", controller: refresh_token_ctrl.to_s, action: 'show' if !opts[:skip].include?(:refresh_token)
-          # get "#{full_path}/validate_token", controller: token_validations_ctrl.to_s, action: 'validate_token' if !opts[:skip].include?(:token_validations)
+          unless opts[:skip].include?(:refresh_token)
+            get "#{full_path}/refresh_token", controller: refresh_token_ctrl.to_s, action: 'show'
+          end
 
           # omniauth routes. only define if omniauth is installed and not skipped.
           if defined?(::OmniAuth) && !opts[:skip].include?(:omniauth_callbacks)
-            match "#{full_path}/failure",             controller: omniauth_ctrl, action: 'omniauth_failure', via: [:get]
-            match "#{full_path}/:provider/callback",  controller: omniauth_ctrl, action: 'omniauth_success', via: [:get]
-
-            match "#{DeviseJwtAuth.omniauth_prefix}/:provider/callback", controller: omniauth_ctrl, action: 'redirect_callbacks', via: [:get, :post]
-            match "#{DeviseJwtAuth.omniauth_prefix}/failure", controller: omniauth_ctrl, action: 'omniauth_failure', via: [:get, :post]
+            match "#{full_path}/failure",
+                  controller: omniauth_ctrl,
+                  action: 'omniauth_failure',
+                  via: [:get]
+            match "#{full_path}/:provider/callback",
+                  controller: omniauth_ctrl,
+                  action: 'omniauth_success',
+                  via: [:get]
+            match "#{DeviseJwtAuth.omniauth_prefix}/:provider/callback",
+                  controller: omniauth_ctrl,
+                  action: 'redirect_callbacks',
+                  via: [:get, :post]
+            match "#{DeviseJwtAuth.omniauth_prefix}/failure",
+                  controller: omniauth_ctrl,
+                  action: 'omniauth_failure',
+                  via: [:get, :post]
 
             # preserve the resource class thru oauth authentication by setting name of
             # resource as "resource_class" param
-            match "#{full_path}/:provider", to: redirect{ |params, request|
+            match "#{full_path}/:provider", to: redirect { |params, request|
               # get the current querystring
-              qs = CGI::parse(request.env['QUERY_STRING'])
+              qs = CGI.parse(request.env['QUERY_STRING'])
 
               # append name of current resource
               qs['resource_class'] = [resource]
@@ -80,7 +91,7 @@ module ActionDispatch::Routing
 
               set_omniauth_path_prefix!(DeviseJwtAuth.omniauth_prefix)
 
-              redirect_params = {}.tap { |hash| qs.each{ |k, v| hash[k] = v.first } }
+              redirect_params = {}.tap { |hash| qs.each { |k, v| hash[k] = v.first } }
 
               if DeviseJwtAuth.redirect_whitelist
                 redirect_url = request.params['auth_origin_url']

@@ -5,7 +5,6 @@ module DeviseJwtAuth::Concerns::SetUserByToken
   include DeviseJwtAuth::Concerns::ResourceFinder
 
   included do
-
   end
 
   protected
@@ -22,10 +21,10 @@ module DeviseJwtAuth::Concerns::SetUserByToken
       devise_warden_user = warden.user(rc.to_s.underscore.to_sym)
       @resource = devise_warden_user if devise_warden_user
     end
-    
+
     # user has already been found and authenticated
-    return @resource if @resource && @resource.is_a?(rc)
-    
+    return @resource if @resource&.is_a?(rc)
+
     # TODO: Look for the access token in an 'Authentication' header
     token = request.headers[DeviseJwtAuth.access_token_name]
     return unless token
@@ -33,8 +32,9 @@ module DeviseJwtAuth::Concerns::SetUserByToken
     payload = DeviseJwtAuth::TokenFactory.decode_access_token(token)
     return if payload.empty?
     return if payload && payload['sub'].blank?
+
     uid = payload['sub']
-    
+
     # mitigate timing attacks by finding by uid instead of auth token
     user = uid && rc.dta_find_by(uid: uid)
     scope = rc.to_s.underscore.to_sym
@@ -46,10 +46,10 @@ module DeviseJwtAuth::Concerns::SetUserByToken
       else
         sign_in(scope, user, store: false, event: :fetch, bypass: DeviseJwtAuth.bypass_sign_in)
       end
-      return @resource = user
+      @resource = user
     else
       # zero all values previously set values
-      return @resource = nil
+      @resource = nil
     end
   end
 
@@ -65,10 +65,10 @@ module DeviseJwtAuth::Concerns::SetUserByToken
       devise_warden_user = warden.user(rc.to_s.underscore.to_sym)
       @resource = devise_warden_user if devise_warden_user
     end
-    
+
     # user has already been found and authenticated
-    return @resource if @resource && @resource.is_a?(rc)
-    
+    return @resource if @resource&.is_a?(rc)
+
     token = request.cookies[DeviseJwtAuth.refresh_token_name]
 
     return unless token
@@ -76,6 +76,7 @@ module DeviseJwtAuth::Concerns::SetUserByToken
     payload = DeviseJwtAuth::TokenFactory.decode_refresh_token(token)
     return if payload.empty?
     return if payload && payload['sub'].blank?
+
     uid = payload['sub']
 
     # mitigate timing attacks by finding by uid instead of auth token
@@ -89,13 +90,12 @@ module DeviseJwtAuth::Concerns::SetUserByToken
       else
         sign_in(scope, user, store: false, event: :fetch, bypass: DeviseJwtAuth.bypass_sign_in)
       end
-      return @resource = user
+      @resource = user
     else
       # zero all values previously set values
-      return @resource = nil
+      @resource = nil
     end
   end
-  
 
   def update_refresh_token_cookie
     response.set_cookie(DeviseJwtAuth.refresh_token_name,
@@ -103,15 +103,13 @@ module DeviseJwtAuth::Concerns::SetUserByToken
                         path: '/auth/refresh_token', # TODO: Use configured auth path
                         expires: Time.zone.now + DeviseJwtAuth.refresh_token_lifespan,
                         httponly: true,
-                        secure: Rails.env.production?
-    )
+                        secure: Rails.env.production?)
   end
-  
+
   def clear_refresh_token_cookie
     response.set_cookie(DeviseJwtAuth.refresh_token_name,
                         value: '',
                         path: '/auth/refresh_token', # TODO: Use configured auth path
-                        expires: Time.zone.now
-    )
+                        expires: Time.zone.now)
   end
 end

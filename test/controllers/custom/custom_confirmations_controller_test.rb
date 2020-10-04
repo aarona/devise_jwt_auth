@@ -10,8 +10,8 @@ class Custom::ConfirmationsControllerTest < ActionController::TestCase
       @redirect_url = Faker::Internet.url
       @new_user = create(:user)
       @new_user.send_confirmation_instructions(redirect_url: @redirect_url)
-      @mail          = ActionMailer::Base.deliveries.last
-      @token         = @mail.body.match(/confirmation_token=([^&]*)&/)[1]
+      @mail = ActionMailer::Base.deliveries.last
+      @token = @mail.body.match(/confirmation_token=([^&]*)&/)[1]
       @client_config = @mail.body.match(/config=([^&]*)&/)[1]
 
       get :show,

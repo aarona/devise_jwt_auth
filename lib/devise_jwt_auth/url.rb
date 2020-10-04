@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 module DeviseJwtAuth::Url
-
   def self.generate(url, params = {})
     uri = URI(url)
 
     res = "#{uri.scheme}://#{uri.host}"
-    res += ":#{uri.port}" if (uri.port && uri.port != 80 && uri.port != 443)
+    res += ":#{uri.port}" if uri.port && uri.port != 80 && uri.port != 443
     res += uri.path.to_s if uri.path
     query = [uri.query, params.to_query].reject(&:blank?).join('&')
     res += "?#{query}"
@@ -28,7 +27,7 @@ module DeviseJwtAuth::Url
   # wildcard convenience class
   class Wildcat
     def self.parse_to_regex(str)
-      escaped = Regexp.escape(str).gsub('\*','.*?')
+      escaped = Regexp.escape(str).gsub('\*', '.*?')
       Regexp.new("^#{escaped}$", Regexp::IGNORECASE)
     end
 
@@ -40,5 +39,4 @@ module DeviseJwtAuth::Url
       !!@regex.match(str)
     end
   end
-
 end

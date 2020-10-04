@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-$:.push File.expand_path('lib', __dir__)
+$LOAD_PATH.push File.expand_path('lib', __dir__)
 
 # Maintain your gem's version:
 require 'devise_jwt_auth/version'
@@ -20,18 +20,18 @@ Gem::Specification.new do |s|
   s.test_files = Dir['test/**/*']
   s.test_files.reject! { |file| file.match(/[.log|.sqlite3]$/) }
 
-  s.required_ruby_version = ">= 2.2.0"
+  s.required_ruby_version = '>= 2.4.0'
 
+  s.add_dependency 'devise', '> 3.5.2', '< 5'
   s.add_dependency 'rails', '>= 4.2.0', '< 6.1'
   s.add_dependency 'sprockets', '3.7.2' # FIXME: breaking changes in 4.0.0
-  s.add_dependency 'devise', '> 3.5.2', '< 5'
-  # s.add_dependency 'bcrypt', '~> 3.0' # Is bcrypt needed anymore? 
+  # s.add_dependency 'bcrypt', '~> 3.0' # Is bcrypt needed anymore?
   s.add_dependency 'jwt', '~> 2.1'
 
   s.add_development_dependency 'appraisal'
-  s.add_development_dependency 'sqlite3', '~> 1.4'
-  s.add_development_dependency 'pg'
-  s.add_development_dependency 'mysql2'
   s.add_development_dependency 'mongoid', '>= 4', '< 8'
   s.add_development_dependency 'mongoid-locker', '~> 1.0'
+  s.add_development_dependency 'mysql2'
+  s.add_development_dependency 'pg'
+  s.add_development_dependency 'sqlite3', '~> 1.4'
 end

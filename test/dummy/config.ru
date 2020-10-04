@@ -2,7 +2,7 @@
 
 # This file is used by Rack-based servers to start the application.
 
-require ::File.expand_path('../config/environment',  __FILE__)
+require ::File.expand_path('config/environment', __dir__)
 run Rails.application
 
 # allow cross origin requests
@@ -12,7 +12,7 @@ use Rack::Cors do
     origins '*'
     resource '*',
              headers: :any,
-             expose: ['access-token', 'expiry', 'token-type', 'uid', 'client'],
+             expose: %w[access-token expiry token-type uid client],
              methods: %i[get post options delete put]
   end
 end

@@ -2,7 +2,7 @@
 
 module Overrides
   class PasswordsController < DeviseJwtAuth::PasswordsController
-    OVERRIDE_PROOF = '(^^,)'.freeze
+    OVERRIDE_PROOF = '(^^,)'
 
     # this is where users arrive after visiting the email confirmation link
     def edit
@@ -10,7 +10,7 @@ module Overrides
         reset_password_token: resource_params[:reset_password_token]
       )
 
-      if @resource && @resource.id
+      if @resource&.id
         # token = @resource.create_token
 
         # ensure that user is confirmed
@@ -23,8 +23,8 @@ module Overrides
           override_proof: OVERRIDE_PROOF,
           reset_password: true
         }
-        redirect_headers = @resource.create_named_token_pair.
-                             merge(redirect_header_options)  
+        redirect_headers = @resource.create_named_token_pair
+                             .merge(redirect_header_options)
         redirect_to_link = DeviseJwtAuth::Url.generate(params[:redirect_url], redirect_headers)
         redirect_to redirect_to_link
 

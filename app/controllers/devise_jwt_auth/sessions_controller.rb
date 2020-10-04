@@ -20,11 +20,17 @@ module DeviseJwtAuth
         @resource = find_resource(field, q_value)
       end
 
-      if @resource && valid_params?(field, q_value) && (!@resource.respond_to?(:active_for_authentication?) || @resource.active_for_authentication?)
+      if @resource &&
+         valid_params?(field, q_value) &&
+         (!@resource.respond_to?(:active_for_authentication?) ||
+          @resource.active_for_authentication?)
         valid_password = @resource.valid_password?(resource_params[:password])
-        if (@resource.respond_to?(:valid_for_authentication?) && !@resource.valid_for_authentication? { valid_password }) || !valid_password
+        if (@resource.respond_to?(:valid_for_authentication?) &&
+           !@resource.valid_for_authentication? { valid_password }) ||
+           !valid_password
           return render_create_error_bad_credentials
         end
+
         @token = @resource.create_token
         @resource.save
 
@@ -34,7 +40,9 @@ module DeviseJwtAuth
 
         update_refresh_token_cookie
         render_create_success
-      elsif @resource && !(!@resource.respond_to?(:active_for_authentication?) || @resource.active_for_authentication?)
+      elsif @resource &&
+            !(!@resource.respond_to?(:active_for_authentication?) ||
+              @resource.active_for_authentication?)
         if @resource.respond_to?(:locked_at) && @resource.locked_at
           render_create_error_account_locked
         else
@@ -72,17 +80,15 @@ module DeviseJwtAuth
 
       # iterate thru allowed auth keys, use first found
       resource_class.authentication_keys.each do |k|
-        if resource_params[k]
-          auth_val = resource_params[k]
-          auth_key = k
-          break
-        end
+        next unless resource_params[k]
+
+        auth_val = resource_params[k]
+        auth_key = k
+        break
       end
 
       # honor devise configuration for case_insensitive_keys
-      if resource_class.case_insensitive_keys.include?(auth_key)
-        auth_val.downcase!
-      end
+      auth_val.downcase! if resource_class.case_insensitive_keys.include?(auth_key)
 
       { key: auth_key, val: auth_val }
     end
@@ -112,7 +118,7 @@ module DeviseJwtAuth
 
     def render_destroy_success
       render json: {
-        success:true
+        success: true
       }, status: 200
     end
 

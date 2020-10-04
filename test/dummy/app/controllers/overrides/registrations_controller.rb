@@ -2,14 +2,14 @@
 
 module Overrides
   class RegistrationsController < DeviseJwtAuth::RegistrationsController
-    OVERRIDE_PROOF = '(^^,)'.freeze
+    OVERRIDE_PROOF = '(^^,)'
 
     def update
       if @resource
         if @resource.update(account_update_params)
           render json: {
             status: 'success',
-            data:   @resource.as_json,
+            data: @resource.as_json,
             override_proof: OVERRIDE_PROOF
           }
         else

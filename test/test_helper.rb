@@ -20,7 +20,7 @@ require 'database_cleaner'
 FactoryBot.definition_file_paths = [File.expand_path('factories', __dir__)]
 FactoryBot.find_definitions
 
-Dir[File.join(__dir__, 'support/**', '*.rb')].each { |file| require file }
+Dir[File.join(__dir__, 'support/**', '*.rb')].sort.each { |file| require file }
 
 # I hate the default reporter. Use ProgressReporter instead.
 Minitest::Reporters.use! Minitest::Reporters::ProgressReporter.new

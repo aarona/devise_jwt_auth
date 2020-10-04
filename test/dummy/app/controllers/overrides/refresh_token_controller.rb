@@ -2,7 +2,7 @@
 
 module Overrides
   class RefreshTokenController < DeviseJwtAuth::RefreshTokenController
-    OVERRIDE_PROOF = '(^^,)'.freeze
+    OVERRIDE_PROOF = '(^^,)'
     def show
       # @resource will have been set by set_user_by_token concern
       if @resource

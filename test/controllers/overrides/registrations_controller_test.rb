@@ -14,7 +14,7 @@ class Overrides::RegistrationsControllerTest < ActionDispatch::IntegrationTest
   describe Overrides::RegistrationsController do
     describe 'Succesful Registration update' do
       before do
-        @existing_user  = create(:user, :confirmed)
+        @existing_user = create(:user, :confirmed)
         @auth_headers = @existing_user.create_named_token_pair
 
         # @client_id      = @auth_headers['client']

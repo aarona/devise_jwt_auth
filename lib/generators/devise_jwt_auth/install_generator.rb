@@ -10,12 +10,12 @@ module DeviseJwtAuth
     class_option :primary_key_type, type: :string, desc: 'The type for primary key'
 
     def copy_migrations
-      if self.class.migration_exists?('db/migrate', "devise_jwt_auth_create_#{user_class.pluralize.gsub('::','').underscore}")
-        say_status('skipped', "Migration 'devise_jwt_auth_create_#{user_class.pluralize.gsub('::','').underscore}' already exists")
+      if self.class.migration_exists?('db/migrate', "devise_jwt_auth_create_#{user_class.pluralize.gsub('::', '').underscore}")
+        say_status('skipped', "Migration 'devise_jwt_auth_create_#{user_class.pluralize.gsub('::', '').underscore}' already exists")
       else
         migration_template(
           'devise_jwt_auth_create_users.rb.erb',
-          "db/migrate/devise_jwt_auth_create_#{user_class.pluralize.gsub('::','').underscore}.rb"
+          "db/migrate/devise_jwt_auth_create_#{user_class.pluralize.gsub('::', '').underscore}.rb"
         )
       end
     end
@@ -26,8 +26,9 @@ module DeviseJwtAuth
         inclusion = 'include DeviseJwtAuth::Concerns::User'
         unless parse_file_for_line(fname, inclusion)
 
-          active_record_needle = (Rails::VERSION::MAJOR == 5) ? 'ApplicationRecord' : 'ActiveRecord::Base'
-          inject_into_file fname, after: "class #{user_class} < #{active_record_needle}\n" do <<-'RUBY'
+          active_record_needle = Rails::VERSION::MAJOR == 5 ? 'ApplicationRecord' : 'ActiveRecord::Base'
+          inject_into_file fname, after: "class #{user_class} < #{active_record_needle}\n" do
+            <<-'RUBY'
             # Include default devise modules.
             devise :database_authenticatable, :registerable,
                     :recoverable, :rememberable, :trackable, :validatable,
@@ -43,7 +44,7 @@ module DeviseJwtAuth
 
     private
 
-    def self.next_migration_number(path)
+    def self.next_migration_number(_path)
       Time.zone.now.utc.strftime('%Y%m%d%H%M%S')
     end
 

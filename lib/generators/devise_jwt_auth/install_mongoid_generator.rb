@@ -3,6 +3,7 @@
 require_relative 'install_generator_helpers'
 
 module DeviseJwtAuth
+  # Adds Mongoid settings to ORM
   class InstallMongoidGenerator < Rails::Generators::Base
     include DeviseJwtAuth::InstallGeneratorHelpers
 
@@ -11,8 +12,8 @@ module DeviseJwtAuth
       if File.exist?(File.join(destination_root, fname))
         inclusion = 'include DeviseJwtAuth::Concerns::User'
         unless parse_file_for_line(fname, inclusion)
-          inject_into_file fname, before: /end\s\z/ do <<-'RUBY'
-
+          inject_into_file fname, before: /end\s\z/ do
+            <<-'RUBY'
   include Mongoid::Locker
 
   field :locker_locked_at, type: Time

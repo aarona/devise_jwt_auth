@@ -15,13 +15,17 @@ Rails.application.configure do
   config.eager_load = false
 
   # Configure static asset server for tests with Cache-Control for performance.
-  Rails::VERSION::MAJOR == 5 ?
-      (config.public_file_server.enabled = true) :
-      (config.serve_static_files  = true)
+  if Rails::VERSION::MAJOR == 5
+    (config.public_file_server.enabled = true)
+  else
+    (config.serve_static_files = true)
+  end
 
-  Rails::VERSION::MAJOR == 5 ?
-      (config.public_file_server.headers = { 'Cache-Control' => 'public, max-age=3600' }) :
-      (config.static_cache_control = 'public, max-age=3600')
+  if Rails::VERSION::MAJOR == 5
+    (config.public_file_server.headers = { 'Cache-Control' => 'public, max-age=3600' })
+  else
+    (config.static_cache_control = 'public, max-age=3600')
+  end
 
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true

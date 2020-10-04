@@ -9,8 +9,7 @@ class Custom::RefreshTokenControllerTest < ActionDispatch::IntegrationTest
     before do
       @resource = create(:user, :confirmed)
       @auth_headers = get_cookie_header(DeviseJwtAuth.refresh_token_name,
-                                        @resource.create_refresh_token
-      )
+                                        @resource.create_refresh_token)
     end
 
     test 'yield resource to block on refresh_token success' do
