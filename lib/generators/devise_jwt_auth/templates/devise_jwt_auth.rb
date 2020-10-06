@@ -29,13 +29,13 @@ DeviseJwtAuth.setup do |config|
   # config.access_token_name = 'access-token'
 
   # This is the refresh token encryption key. You should set this in an
-  # environment variable or secret key base that isn't store in a repository.
+  # environment variable or secret key base that isn't stored in a repository.
   # Also, its a good idea to NOT use the same key for access tokens.
   config.refresh_token_encryption_key = 'your-refresh-token-secret-key-here'
 
-  # This is the refresh token encryption key. You should set this in an
-  # environment variable or secret key base that isn't store in a repository.
-  # Also, its a good idea to NOT use the same key for access tokens.
+  # This is the access token encryption key. You should set this in an
+  # environment variable or secret key base that isn't stored in a repository.
+  # Also, its a good idea to NOT use the same key for refresh tokens.
   config.access_token_encryption_key = 'your-access-token-secret-key-here'
 
   # This route will be the prefix for all oauth2 redirect callbacks. For
