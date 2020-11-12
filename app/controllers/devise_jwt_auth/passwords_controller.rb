@@ -17,7 +17,7 @@ module DeviseJwtAuth
           email: @email,
           provider: 'email',
           redirect_url: @redirect_url,
-          client_config: params[:config_name]
+          # client_config: params[:config_name]
         )
 
         if @resource.errors.empty?
@@ -54,17 +54,16 @@ module DeviseJwtAuth
             reset_password_token: resource_params[:reset_password_token]
           )
         else
-          redirect_header_options = { reset_password: true }
-          redirect_headers = @resource.create_named_token_pair
-                               .merge(redirect_header_options)
+          # redirect_header_options = { reset_password: true }
+          # redirect_headers = @resource.create_named_token_pair
+          #                      .merge(redirect_header_options)
 
           # TODO: do we put the refresh token here?
           # we do if token exists (see line 41)
           update_refresh_token_cookie
 
-          redirect_to_link = DeviseJwtAuth::Url.generate(@redirect_url, redirect_headers)
-
-          redirect_to redirect_to_link
+          # redirect_to_link = DeviseJwtAuth::Url.generate(@redirect_url, redirect_headers)
+          redirect_to @redirect_url
         end
       else
         render_edit_error

@@ -109,7 +109,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
             assert @data['errors']
             assert_equal @data['errors'],
                          [I18n.t('devise_jwt_auth.passwords.user_not_found',
-                                 email: 'chester@cheet.ah')]
+                         email: 'chester@cheet.ah')]
           end
 
           test 'response should not have refresh cookie' do
@@ -143,7 +143,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
             @resource.reload
             @data = JSON.parse(response.body)
 
-            @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
+            # @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
             @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=([^&]*)&/)[1])
             @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)"/)[1]
           end
@@ -178,9 +178,9 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
             assert_equal @redirect_url, @mail_redirect_url
           end
 
-          test 'the client config name should fall back to "default"' do
-            assert_equal 'default', @mail_config_name
-          end
+          # test 'the client config name should fall back to "default"' do
+          #   assert_equal 'default', @mail_config_name
+          # end
 
           test 'the email body should contain a link with reset token as a query param' do
             user = User.reset_password_by_token(reset_password_token: @mail_reset_token)
@@ -209,9 +209,9 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
               raw_qs = response.location.split('?')[1]
               @qs = Rack::Utils.parse_nested_query(raw_qs)
 
-              @access_token   = @qs[DeviseJwtAuth.access_token_name]
-              @reset_password = @qs['reset_password']
-              @refresh_token  = response.cookies[DeviseJwtAuth.refresh_token_name]
+              # @access_token   = @qs[DeviseJwtAuth.access_token_name]
+              # @reset_password = @qs['reset_password']
+              @refresh_token = response.cookies[DeviseJwtAuth.refresh_token_name]
             end
 
             test 'response should have success redirect status' do
@@ -219,14 +219,14 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
             end
 
             test 'response should contain auth params' do
-              assert @access_token
-              assert @reset_password
+              # assert @access_token
+              # assert @reset_password
               assert @refresh_token
             end
 
             test 'access and refresh tokens should be valid' do
-              payload = DeviseJwtAuth::TokenFactory.decode_access_token(@access_token)
-              assert payload['sub']
+              # payload = DeviseJwtAuth::TokenFactory.decode_access_token(@access_token)
+              # assert payload['sub']
               payload = DeviseJwtAuth::TokenFactory.decode_refresh_token(@refresh_token)
               assert payload['sub']
             end
@@ -851,17 +851,18 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
       before do
         @resource = create(:user, :confirmed)
         @redirect_url = 'http://ng-token-auth.dev'
-        @config_name  = 'altUser'
+        # @config_name  = 'altUser'
 
         params = { email: @resource.email,
                    redirect_url: @redirect_url,
-                   config_name: @config_name }
+                   # config_name: @config_name
+                  }
         get_reset_token params
       end
 
-      test 'config_name param is included in the confirmation email link' do
-        assert_equal @config_name, @mail_config_name
-      end
+      # test 'config_name param is included in the confirmation email link' do
+      #   assert_equal @config_name, @mail_config_name
+      # end
     end
 
     def get_reset_token(params = nil)
@@ -871,7 +872,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
       @mail = ActionMailer::Base.deliveries.last
       @resource.reload
 
-      @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
+      # @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
       @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=([^&]*)&/)[1])
       @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)"/)[1]
     end

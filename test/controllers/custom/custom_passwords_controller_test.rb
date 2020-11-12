@@ -19,7 +19,7 @@ class Custom::PasswordsControllerTest < ActionController::TestCase
       @mail = ActionMailer::Base.deliveries.last
       @resource.reload
 
-      @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
+      # @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
       @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=([^&]*)&/)[1])
       @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)"/)[1]
 
@@ -39,7 +39,7 @@ class Custom::PasswordsControllerTest < ActionController::TestCase
       @mail = ActionMailer::Base.deliveries.last
       @resource.reload
 
-      @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
+      # @mail_config_name  = CGI.unescape(@mail.body.match(/config=([^&]*)&/)[1])
       @mail_redirect_url = CGI.unescape(@mail.body.match(/redirect_url=([^&]*)&/)[1])
       @mail_reset_token  = @mail.body.match(/reset_password_token=(.*)"/)[1]
 
