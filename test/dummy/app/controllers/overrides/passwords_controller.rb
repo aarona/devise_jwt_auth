@@ -11,8 +11,6 @@ module Overrides
       )
 
       if @resource&.id
-        # token = @resource.create_token
-
         # ensure that user is confirmed
         @resource.skip_confirmation! unless @resource.confirmed_at
 
@@ -27,16 +25,6 @@ module Overrides
                              .merge(redirect_header_options)
         redirect_to_link = DeviseJwtAuth::Url.generate(params[:redirect_url], redirect_headers)
         redirect_to redirect_to_link
-
-        # redirect_header_options = {
-        #   override_proof: OVERRIDE_PROOF,
-        #   reset_password: true
-        # }
-        # redirect_headers = build_redirect_headers(token.token,
-        #                                           token.client,
-        #                                           redirect_header_options)
-        # redirect_to(@resource.build_auth_url(params[:redirect_url],
-        #                                      redirect_headers))
       else
         raise ActionController::RoutingError, 'Not Found'
       end

@@ -23,7 +23,7 @@ module DeviseJwtAuth::Concerns::SetUserByToken
     end
 
     # user has already been found and authenticated
-    return @resource if @resource&.is_a?(rc)
+    return @resource if @resource.is_a?(rc)
 
     # TODO: Look for the access token in an 'Authentication' header
     token = request.headers[DeviseJwtAuth.access_token_name]
@@ -67,7 +67,7 @@ module DeviseJwtAuth::Concerns::SetUserByToken
     end
 
     # user has already been found and authenticated
-    return @resource if @resource&.is_a?(rc)
+    return @resource if @resource.is_a?(rc)
 
     token = request.cookies[DeviseJwtAuth.refresh_token_name]
 

@@ -4,7 +4,7 @@ module DeviseJwtAuth
   class PasswordsController < DeviseJwtAuth::ApplicationController
     before_action :validate_redirect_url_param, only: [:create, :edit]
 
-    # this action is responsible for generating password reset tokens and sending emails
+    # This action is responsible for generating password reset tokens and sending emails
     def create
       return render_create_error_missing_email unless resource_params[:email]
 
@@ -16,8 +16,7 @@ module DeviseJwtAuth
         @resource.send_reset_password_instructions(
           email: @email,
           provider: 'email',
-          redirect_url: @redirect_url,
-          # client_config: params[:config_name]
+          redirect_url: @redirect_url
         )
 
         if @resource.errors.empty?
@@ -30,15 +29,11 @@ module DeviseJwtAuth
       end
     end
 
-    # this is where users arrive after visiting the password reset confirmation link
+    # This is where users arrive after visiting the password reset confirmation link.
     def edit
-      # if a user is not found, return nil
       @resource = resource_class.with_reset_password_token(resource_params[:reset_password_token])
 
       if @resource&.reset_password_period_valid?
-        # TODO: add a token invalidator
-        # token = @resource.create_token unless require_client_password_reset_token?
-
         # ensure that user is confirmed
         @resource.skip_confirmation! if confirmable_enabled? && !@resource.confirmed_at
 
@@ -49,20 +44,15 @@ module DeviseJwtAuth
         yield @resource if block_given?
 
         if require_client_password_reset_token?
+          clear_refresh_token_cookie
+
           redirect_to DeviseJwtAuth::Url.generate(
             @redirect_url,
             reset_password_token: resource_params[:reset_password_token]
           )
         else
-          # redirect_header_options = { reset_password: true }
-          # redirect_headers = @resource.create_named_token_pair
-          #                      .merge(redirect_header_options)
-
           # TODO: do we put the refresh token here?
-          # we do if token exists (see line 41)
           update_refresh_token_cookie
-
-          # redirect_to_link = DeviseJwtAuth::Url.generate(@redirect_url, redirect_headers)
           redirect_to @redirect_url
         end
       else
@@ -71,12 +61,11 @@ module DeviseJwtAuth
     end
 
     def update
-      # make sure user is authorized
+      # Make sure user is authorized. Either by a reset_password_token or a valid access token.
       if require_client_password_reset_token? && resource_params[:reset_password_token]
         @resource = resource_class.with_reset_password_token(resource_params[:reset_password_token])
-        return render_update_error_unauthorized unless @resource
 
-        # @token = @resource.create_token
+        return render_update_error_unauthorized unless @resource
       else
         @resource = set_user_by_token
       end
