@@ -84,7 +84,7 @@ module DeviseJwtAuth
           end
 
           def postgresql?
-            config = ActiveRecord::Base.configurations[Rails.env]
+            config = ActiveRecord::Base.connection_db_config.configuration_hash
             config && config['adapter'] == 'postgresql'
           end
 

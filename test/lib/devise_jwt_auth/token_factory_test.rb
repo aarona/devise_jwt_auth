@@ -44,7 +44,7 @@ class DeviseJwtAuth::TokenFactoryTest < ActiveSupport::TestCase
           result = tf.decode_refresh_token(token)
           assert result['exp'] == future_exp
         end
-
+        
         it 'invalidates expired token' do
           token = tf.create_refresh_token(payload.merge(exp: past_exp))
           result = tf.decode_refresh_token(token)

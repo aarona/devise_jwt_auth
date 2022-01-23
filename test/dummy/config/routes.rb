@@ -54,4 +54,6 @@ Rails.application.routes.draw do
 
   # we need a route for omniauth_callback_controller to redirect to in sameWindow case
   get 'auth_origin', to: 'auth_origin#redirected'
+
+  # get 'omniauth/facebook', to: 'omni#facebook'
 end

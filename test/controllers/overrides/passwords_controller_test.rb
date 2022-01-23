@@ -46,13 +46,8 @@ class Overrides::PasswordsControllerTest < ActionDispatch::IntegrationTest
     test 'response should contain auth params + override proof' do
       # TODO: remove access-token and keep uid?
       assert @query_string['access-token']
-      # assert @query_string['client']
-      # assert @query_string['client_id']
-      # assert @query_string['expiry']
       assert @query_string['override_proof']
       assert @query_string['reset_password']
-      # assert @query_string['token']
-      # assert @query_string['uid']
     end
 
     test 'override proof is correct' do

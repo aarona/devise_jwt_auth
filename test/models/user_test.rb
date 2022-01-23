@@ -58,42 +58,6 @@ class UserTest < ActiveSupport::TestCase
       end
     end
 
-    #     describe 'token expiry' do
-    #       before do
-    #         @resource = create(:user, :confirmed)
-    #         # TODO: expire this token?
-    #         @auth_headers = @resource.create_named_token_pair
-    #
-    #         # @token     = @auth_headers['access-token']
-    #         # @client_id = @auth_headers['client']
-    #       end
-    #
-    #       test 'should properly indicate whether token is current' do
-    #         assert @resource.token_is_current?(@token, @client_id)
-    #         # we want to update the expiry without forcing a cleanup (see below)
-    #         @resource.tokens[@client_id]['expiry'] = Time.zone.now.to_i - 10.seconds
-    #         refute @resource.token_is_current?(@token, @client_id)
-    #       end
-    #     end
-    #
-    #     describe 'expired tokens are destroyed on save' do
-    #       before do
-    #         @resource = create(:user, :confirmed)
-    #
-    #         @old_auth_headers = @resource.create_new_auth_token
-    #         @new_auth_headers = @resource.create_new_auth_token
-    #         expire_token(@resource, @old_auth_headers['client'])
-    #       end
-    #
-    #       test 'expired token was removed' do
-    #         refute @resource.tokens[@old_auth_headers[:client]]
-    #       end
-    #
-    #       test 'current token was not removed' do
-    #         assert @resource.tokens[@new_auth_headers['client']]
-    #       end
-    #     end
-
     describe 'nil tokens are handled properly' do
       before do
         @resource = create(:user, :confirmed)

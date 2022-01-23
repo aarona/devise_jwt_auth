@@ -2,10 +2,19 @@
 
 # Email field validator.
 class DeviseJwtAuthEmailValidator < ActiveModel::EachValidator
-  def validate_each(record, attribute, value)
-    return if value =~ /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+  EMAIL_REGEXP = /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 
-    record.errors[attribute] << email_invalid_message
+  class << self
+    def validate?(email)
+      email =~ EMAIL_REGEXP
+    end
+  end
+
+  def validate_each(record, attribute, value)
+    unless DeviseJwtAuthEmailValidator.validate?(value)
+      # record.errors[attribute] << email_invalid_message
+      record.errors.add(attribute, email_invalid_message)
+    end
   end
 
   private

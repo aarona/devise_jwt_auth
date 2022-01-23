@@ -13,7 +13,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
     describe 'Password reset' do
       before do
         @resource = create(:user, :confirmed)
-        @redirect_url = 'http://ng-token-auth.dev'
+        @redirect_url = 'http://ng-jwt-auth.dev'
       end
 
       describe 'not email should return 401' do
@@ -340,7 +340,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
       describe 'Using default_password_reset_url' do
         before do
           @resource = create(:user, :confirmed)
-          @redirect_url = 'http://ng-token-auth.dev'
+          @redirect_url = 'http://ng-jwt-auth.dev'
 
           DeviseJwtAuth.default_password_reset_url = @redirect_url
 
@@ -798,7 +798,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
 
       before do
         @resource = create(:mang_user, :confirmed)
-        @redirect_url = 'http://ng-token-auth.dev'
+        @redirect_url = 'http://ng-jwt-auth.dev'
         get_reset_token
       end
 
@@ -816,7 +816,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
     describe 'unconfirmed user' do
       before do
         @resource = create(:user)
-        @redirect_url = 'http://ng-token-auth.dev'
+        @redirect_url = 'http://ng-jwt-auth.dev'
 
         get_reset_token
 
@@ -850,7 +850,7 @@ class DeviseJwtAuth::PasswordsControllerTest < ActionController::TestCase
     describe 'alternate user type' do
       before do
         @resource = create(:user, :confirmed)
-        @redirect_url = 'http://ng-token-auth.dev'
+        @redirect_url = 'http://ng-jwt-auth.dev'
         # @config_name  = 'altUser'
 
         params = { email: @resource.email,

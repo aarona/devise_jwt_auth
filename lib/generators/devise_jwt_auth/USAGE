@@ -8,7 +8,7 @@ Arguments:
              # 'User'
   MOUNT_PATH # The path at which to mount the authentication routes. Default is
              # 'auth'. More detail documentation is here:
-             # https://devise-token-auth.gitbook.io/devise-token-auth/usage
+             # https://github.com/aarona/devise_jwt_auth
 
 Example:
   rails generate devise_jwt_auth:install User auth

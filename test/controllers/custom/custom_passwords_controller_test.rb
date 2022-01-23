@@ -8,7 +8,7 @@ class Custom::PasswordsControllerTest < ActionController::TestCase
 
     before do
       @resource = create(:user, :confirmed)
-      @redirect_url = 'http://ng-token-auth.dev'
+      @redirect_url = 'http://ng-jwt-auth.dev'
     end
 
     test 'yield resource to block on create success' do
@@ -29,7 +29,7 @@ class Custom::PasswordsControllerTest < ActionController::TestCase
 
     test 'yield resource to block on edit success' do
       @resource = create(:user)
-      @redirect_url = 'http://ng-token-auth.dev'
+      @redirect_url = 'http://ng-jwt-auth.dev'
 
       post :create,
            params: { email: @resource.email,

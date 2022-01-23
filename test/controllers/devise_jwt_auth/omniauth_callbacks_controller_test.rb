@@ -14,7 +14,7 @@ class OmniauthTest < ActionDispatch::IntegrationTest
   end
 
   before do
-    @redirect_url = 'http://ng-token-auth.dev/'
+    @redirect_url = 'http://ng-jwt-auth.dev/'
   end
 
   def get_parsed_data_json
@@ -58,8 +58,8 @@ class OmniauthTest < ActionDispatch::IntegrationTest
 
     test 'session vars have been cleared' do
       get_success
-      refute request.session['dta.omniauth.auth']
-      refute request.session['dta.omniauth.params']
+      refute request.session['dja.omniauth.auth']
+      refute request.session['dja.omniauth.params']
     end
 
     test 'sign_in was called' do

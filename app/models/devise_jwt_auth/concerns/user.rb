@@ -106,8 +106,6 @@ module DeviseJwtAuth::Concerns::User
 
   def build_auth_url(base_url, args)
     args[:uid]    = uid
-    args[:expiry] = tokens[args[:client_id]]['expiry']
-
     DeviseJwtAuth::Url.generate(base_url, args)
   end
 

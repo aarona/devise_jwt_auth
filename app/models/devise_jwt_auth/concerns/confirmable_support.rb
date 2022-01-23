@@ -9,22 +9,12 @@ module DeviseJwtAuth::Concerns::ConfirmableSupport
     # for not to use `will_save_change_to_email?` & `email_changed?` methods.
     def postpone_email_change?
       postpone = self.class.reconfirmable &&
-                 email_value_in_database != email &&
+                 email_was != email &&
                  !@bypass_confirmation_postpone &&
                  email.present? &&
-                 (!@skip_reconfirmation_in_callback || !email_value_in_database.nil?)
+                 (!@skip_reconfirmation_in_callback || !email_was.nil?)
       @bypass_confirmation_postpone = false
       postpone
-    end
-  end
-
-  protected
-
-  def email_value_in_database
-    if Devise.rails51? && respond_to?(:email_in_database)
-      email_in_database
-    else
-      email_was
     end
   end
 end

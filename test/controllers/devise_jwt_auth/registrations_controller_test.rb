@@ -879,18 +879,6 @@ class DeviseJwtAuth::RegistrationsControllerTest < ActionDispatch::IntegrationTe
       test 'user was confirmed' do
         assert @resource.confirmed?
       end
-
-      #       test 'auth headers were returned in response' do
-      #         assert response.headers['access-token']
-      #         assert response.headers['token-type']
-      #         assert response.headers['client']
-      #         assert response.headers['expiry']
-      #         assert response.headers['uid']
-      #       end
-      #
-      #       test 'response token is valid' do
-      #         assert @resource.valid_token?(@token, @client_id)
-      #       end
     end
 
     describe 'User with only :database_authenticatable and :registerable included' do

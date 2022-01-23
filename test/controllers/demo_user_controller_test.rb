@@ -15,25 +15,13 @@ class DemoUserControllerTest < ActionDispatch::IntegrationTest
       before do
         @resource = create(:user, :confirmed)
         @auth_headers = @resource.create_named_token_pair
-
-        # @token     = @auth_headers['access-token']
-        # @client_id = @auth_headers['client']
-        # @expiry    = @auth_headers['expiry']
       end
 
       describe 'successful request' do
         before do
-          # ensure that request is not treated as batch request
-          # age_token(@resource, @client_id)
-
           get '/demo/members_only',
               params: {},
               headers: @auth_headers
-
-          # @resp_token       = response.headers['access-token']
-          # @resp_client_id   = response.headers['client']
-          # @resp_expiry      = response.headers['expiry']
-          # @resp_uid         = response.headers['uid']
         end
 
         describe 'devise mappings' do
@@ -57,42 +45,6 @@ class DemoUserControllerTest < ActionDispatch::IntegrationTest
         it 'should return success status' do
           assert_equal 200, response.status
         end
-
-        #         it 'should receive new token after successful request' do
-        #           refute_equal @token, @resp_token
-        #         end
-        #
-        #         it 'should preserve the client id from the first request' do
-        #           assert_equal @client_id, @resp_client_id
-        #         end
-        #
-        #         it "should return the user's uid in the auth header" do
-        #           assert_equal @resource.uid, @resp_uid
-        #         end
-        #
-        #         it 'should not treat this request as a batch request' do
-        #           refute assigns(:is_batch_request)
-        #         end
-        #
-        #         describe 'subsequent requests' do
-        #           before do
-        #             @resource.reload
-        #             # ensure that request is not treated as batch request
-        #             # age_token(@resource, @client_id)
-        #
-        #             get '/demo/members_only',
-        #                 params: {},
-        #                 headers: @auth_headers.merge('access-token' => @resp_token)
-        #           end
-        #
-        #           it 'should not treat this request as a batch request' do
-        #             refute assigns(:is_batch_request)
-        #           end
-        #
-        #           it 'should allow a new request to be made using new token' do
-        #             assert_equal 200, response.status
-        #           end
-        #         end
       end
 
       describe 'failed request' do
@@ -110,213 +62,12 @@ class DemoUserControllerTest < ActionDispatch::IntegrationTest
           assert_equal 401, response.status
         end
       end
-      #       describe 'disable change_headers_on_each_request' do
-      #         before do
-      #           DeviseJwtAuth.change_headers_on_each_request = false
-      #           @resource.reload
-      #           # age_token(@resource, @client_id)
-      #
-      #           get '/demo/members_only',
-      #               params: {},
-      #               headers: @auth_headers
-      #
-      #           @first_is_batch_request = assigns(:is_batch_request)
-      #           @first_user = assigns(:resource).dup
-      #           @first_access_token = response.headers['access-token']
-      #           @first_response_status = response.status
-      #
-      #           @resource.reload
-      #           # age_token(@resource, @client_id)
-      #
-      #           # use expired auth header
-      #           get '/demo/members_only',
-      #               params: {},
-      #               headers: @auth_headers
-      #
-      #           @second_is_batch_request = assigns(:is_batch_request)
-      #           @second_user = assigns(:resource).dup
-      #           @second_access_token = response.headers['access-token']
-      #           @second_response_status = response.status
-      #         end
-      #
-      #         after do
-      #           DeviseJwtAuth.change_headers_on_each_request = true
-      #         end
-      #
-      #         it 'should allow the first request through' do
-      #           assert_equal 200, @first_response_status
-      #         end
-      #
-      #         it 'should allow the second request through' do
-      #           assert_equal 200, @second_response_status
-      #         end
-      #
-      #         it 'should return auth headers from the first request' do
-      #           assert @first_access_token
-      #         end
-      #
-      #         it 'should not treat either requests as batch requests' do
-      #           refute @first_is_batch_request
-      #           refute @second_is_batch_request
-      #         end
-      #
-      #         it 'should return auth headers from the second request' do
-      #           assert @second_access_token
-      #         end
-      #
-      #         it 'should define user during first request' do
-      #           assert @first_user
-      #         end
-      #
-      #         it 'should define user during second request' do
-      #           assert @second_user
-      #         end
-      #       end
-      #
-      #       describe 'batch requests' do
-      #         describe 'success' do
-      #           before do
-      #             # age_token(@resource, @client_id)
-      #
-      #             get '/demo/members_only',
-      #                 params: {},
-      #                 headers: @auth_headers
-      #
-      #             @first_is_batch_request = assigns(:is_batch_request)
-      #             @first_user = assigns(:resource)
-      #             @first_access_token = response.headers['access-token']
-      #
-      #             get '/demo/members_only',
-      #                 params: {},
-      #                 headers: @auth_headers
-      #
-      #             @second_is_batch_request = assigns(:is_batch_request)
-      #             @second_user = assigns(:resource)
-      #             @second_access_token = response.headers['access-token']
-      #           end
-      #
-      #           it 'should allow both requests through' do
-      #             assert_equal 200, response.status
-      #           end
-      #
-      #           it 'should not treat the first request as a batch request' do
-      #             refute @first_is_batch_request
-      #           end
-      #
-      #           it 'should treat the second request as a batch request' do
-      #             assert @second_is_batch_request
-      #           end
-      #
-      #           it 'should return access token for first (non-batch) request' do
-      #             assert @first_access_token
-      #           end
-      #
-      #           it 'should not return auth headers for second (batched) requests' do
-      #             assert_equal ' ', @second_access_token
-      #           end
-      #         end
-      #
-      #         describe 'unbatch' do
-      #           before do
-      #             @resource.reload
-      #             # age_token(@resource, @client_id)
-      #
-      #             get '/demo/members_only',
-      #                 params: {},
-      #                 headers: @auth_headers
-      #
-      #             @first_is_batch_request = assigns(:is_batch_request)
-      #             @first_user = assigns(:resource).dup
-      #             @first_access_token = response.headers['access-token']
-      #             @first_response_status = response.status
-      #
-      #             get '/demo/members_only?unbatch=true',
-      #                 params: {},
-      #                 headers: @auth_headers
-      #
-      #             @second_is_batch_request = assigns(:is_batch_request)
-      #             @second_user = assigns(:resource)
-      #             @second_access_token = response.headers['access-token']
-      #             @second_response_status = response.status
-      #           end
-      #
-      #           it 'should NOT treat the second request as a batch request when "unbatch" param is set' do
-      #             refute @second_is_batch_request
-      #           end
-      #         end
-      #
-      #         describe 'time out' do
-      #           before do
-      #             @resource.reload
-      #             # age_token(@resource, @client_id)
-      #
-      #             get '/demo/members_only',
-      #                 params: {},
-      #                 headers: @auth_headers
-      #
-      #             @first_is_batch_request = assigns(:is_batch_request)
-      #             @first_user = assigns(:resource).dup
-      #             @first_access_token = response.headers['access-token']
-      #             @first_response_status = response.status
-      #
-      #             @resource.reload
-      #             # age_token(@resource, @client_id)
-      #
-      #             # use expired auth header
-      #             get '/demo/members_only',
-      #                 params: {},
-      #                 headers: @auth_headers
-      #
-      #             @second_is_batch_request = assigns(:is_batch_request)
-      #             @second_user = assigns(:resource)
-      #             @second_access_token = response.headers['access-token']
-      #             @second_response_status = response.status
-      #           end
-      #
-      #           it 'should allow the first request through' do
-      #             assert_equal 200, @first_response_status
-      #           end
-      #
-      #           it 'should not allow the second request through' do
-      #             assert_equal 401, @second_response_status
-      #           end
-      #
-      #           it 'should not treat first request as batch request' do
-      #             refute @second_is_batch_request
-      #           end
-      #
-      #           it 'should return auth headers from the first request' do
-      #             assert @first_access_token
-      #           end
-      #
-      #           it 'should not treat second request as batch request' do
-      #             refute @second_is_batch_request
-      #           end
-      #
-      #           it 'should not return auth headers from the second request' do
-      #             refute @second_access_token
-      #           end
-      #
-      #           it 'should define user during first request' do
-      #             assert @first_user
-      #           end
-      #
-      #           it 'should not define user during second request' do
-      #             refute @second_user
-      #           end
-      #         end
-      #       end
 
       describe 'successful password change' do
         before do
-          # DeviseJwtAuth.remove_tokens_after_password_reset = true
-
           # adding one more token to simulate another logged in device
           @old_auth_headers = @auth_headers
           @auth_headers = @resource.create_named_token_pair
-
-          # age_token(@resource, @client_id)
-          # assert @resource.tokens.count > 1
 
           # password changed from new device
           @resource.update(password: 'newsecret123',
@@ -326,14 +77,6 @@ class DemoUserControllerTest < ActionDispatch::IntegrationTest
               params: {},
               headers: @auth_headers
         end
-
-        after do
-          # DeviseJwtAuth.remove_tokens_after_password_reset = false
-        end
-
-        # it 'should have only one token' do
-        #   assert_equal 1, @resource.tokens.count
-        # end
 
         it 'new request should be successful' do
           assert 200, response.status
@@ -349,142 +92,40 @@ class DemoUserControllerTest < ActionDispatch::IntegrationTest
         end
       end
 
-      #       describe 'request including destroy of token' do
-      #         describe 'when change_headers_on_each_request is set to false' do
-      #           before do
-      #             DeviseJwtAuth.change_headers_on_each_request = false
-      #             # age_token(@resource, @client_id)
-      #
-      #             get '/demo/members_only_remove_token',
-      #                 params: {},
-      #                 headers: @auth_headers
-      #           end
-      #
-      #           after do
-      #             DeviseJwtAuth.change_headers_on_each_request = true
-      #           end
-      #
-      #           it 'should not return auth-headers' do
-      #             refute response.headers['access-token']
-      #           end
-      #         end
-      #
-      #         describe 'when change_headers_on_each_request is set to true' do
-      #           before do
-      #             # age_token(@resource, @client_id)
-      #             get '/demo/members_only_remove_token',
-      #                 params: {},
-      #                 headers: @auth_headers
-      #           end
-      #
-      #           it 'should not return auth-headers' do
-      #             refute response.headers['access-token']
-      #           end
-      #         end
-      #       end
-
       describe 'when access-token name has been changed' do
         before do
-          # ensure that request is not treated as batch request
-          # DeviseJwtAuth.headers_names[:'access-token'] = 'new-access-token'
           DeviseJwtAuth.access_token_name = 'new-access-token'
 
           auth_headers_modified = @resource.create_named_token_pair
-
-          # client_id = auth_headers_modified['client']
-          # age_token(@resource, client_id)
 
           get '/demo/members_only',
               params: {},
               headers: auth_headers_modified
 
-          # @resp_token = response.headers['new-access-token']
           # TODO: do we want to send access-tokens with every response?
           @data = JSON.parse(response.body)
         end
-        #         it 'should have "new-access-token" in reponse' do
-        #           # assert @resp_token.present?
-        #           # assert @data['new-access-token']
-        #         end
+
         after do
-          # DeviseJwtAuth.headers_names[:'access-token'] = 'access-token'
           DeviseJwtAuth.access_token_name = 'access-token'
         end
       end
-
-      #       describe 'maximum concurrent devices per user' do
-      #         before do
-      #           # Set the max_number_of_devices to a lower number
-      #           #  to expedite tests! (Default is 10)
-      #           DeviseJwtAuth.max_number_of_devices = 5
-      #         end
-      #
-      #         it 'should limit the maximum number of concurrent devices' do
-      #           # increment the number of devices until the maximum is exceeded
-      #           1.upto(DeviseJwtAuth.max_number_of_devices + 1).each do |n|
-      #
-      #             assert_equal(
-      #               [n, DeviseJwtAuth.max_number_of_devices].min,
-      #               @resource.reload.tokens.length
-      #             )
-      #
-      #             # Add a new device (and token) ahead of the next iteration
-      #             # @resource.create_new_auth_token
-      #             create_token_header(@resource)
-      #           end
-      #         end
-      #
-      #         it 'should drop the oldest token when the maximum number of devices is exceeded' do
-      #           # create the maximum number of tokens
-      #           1.upto(DeviseJwtAuth.max_number_of_devices).each do
-      #             # @resource.create_new_auth_token
-      #             create_token_header(@resource)
-      #           end
-      #
-      #           # get the oldest token client_id
-      #           oldest_client_id, = @resource.reload.tokens.min_by do |cid, v|
-      #             v[:expiry] || v['expiry']
-      #           end # => [ 'CLIENT_ID', {token: ...} ]
-      #
-      #           # create another token, thereby dropping the oldest token
-      #           # @resource.create_new_auth_token
-      #           create_token_header(@resource)
-      #
-      #           assert_not_includes @resource.reload.tokens.keys, oldest_client_id
-      #         end
-      #
-      #         after do
-      #           DeviseJwtAuth.max_number_of_devices = 10
-      #         end
-      #       end
     end
 
     describe 'bypass_sign_in' do
       before do
         @resource = create(:user)
         @auth_headers = @resource.create_named_token_pair
-
-        # @token     = @auth_headers['access-token']
-        # @client_id = @auth_headers['client']
-        # @expiry    = @auth_headers['expiry']
       end
       describe 'is default value (true)' do
         before do
-          # age_token(@resource, @client_id)
-
           get '/demo/members_only', params: {}, headers: @auth_headers
-
-          # @access_token = response.headers['access-token']
           @response_status = response.status
         end
 
         it 'should allow the request through' do
           assert_equal 200, @response_status
         end
-
-        # it 'should return auth headers' do
-        #   assert @access_token
-        # end
 
         it 'should set current user' do
           assert_equal @controller.current_user, @resource
@@ -493,7 +134,6 @@ class DemoUserControllerTest < ActionDispatch::IntegrationTest
       describe 'is false' do
         before do
           DeviseJwtAuth.bypass_sign_in = false
-          # age_token(@resource, @client_id)
 
           get '/demo/members_only', params: {}, headers: @auth_headers
 
@@ -530,11 +170,6 @@ class DemoUserControllerTest < ActionDispatch::IntegrationTest
           get '/demo/members_only',
               params: {},
               headers: nil
-
-          # @resp_token       = response.headers['access-token']
-          # @resp_client_id   = response.headers['client']
-          # @resp_expiry      = response.headers['expiry']
-          # @resp_uid         = response.headers['uid']
         end
 
         describe 'devise mappings' do
@@ -554,22 +189,6 @@ class DemoUserControllerTest < ActionDispatch::IntegrationTest
         it 'should return success status' do
           assert_equal 200, response.status
         end
-
-        #         it 'should receive new token after successful request' do
-        #           assert @resp_token
-        #         end
-        #
-        #         it 'should set the token expiry in the auth header' do
-        #           assert @resp_expiry
-        #         end
-        #
-        #         it 'should return the client id in the auth header' do
-        #           assert @resp_client_id
-        #         end
-        #
-        #         it "should return the user's uid in the auth header" do
-        #           assert @resp_uid
-        #         end
       end
 
       describe 'existing Warden authentication with ignored token data' do
@@ -580,11 +199,6 @@ class DemoUserControllerTest < ActionDispatch::IntegrationTest
           get '/demo/members_only',
               params: {},
               headers: @auth_headers
-
-          # @resp_token       = response.headers['access-token']
-          # @resp_client_id   = response.headers['client']
-          # @resp_expiry      = response.headers['expiry']
-          # @resp_uid         = response.headers['uid']
         end
 
         describe 'devise mappings' do
@@ -604,30 +218,6 @@ class DemoUserControllerTest < ActionDispatch::IntegrationTest
         it 'should return success status' do
           assert_equal 200, response.status
         end
-
-        #         it 'should receive new token after successful request' do
-        #           assert @resp_token
-        #         end
-        #
-        #         it 'should set the token expiry in the auth header' do
-        #           assert @resp_expiry
-        #         end
-        #
-        #         it 'should return the client id in the auth header' do
-        #           assert @resp_client_id
-        #         end
-        #
-        #         it "should not use the existing token's client" do
-        #           refute_equal @auth_headers['client'], @resp_client_id
-        #         end
-        #
-        #         it "should return the user's uid in the auth header" do
-        #           assert @resp_uid
-        #         end
-        #
-        #         it "should not return the token user's uid in the auth header" do
-        #           refute_equal @resp_uid, @auth_headers['uid']
-        #         end
       end
     end
   end

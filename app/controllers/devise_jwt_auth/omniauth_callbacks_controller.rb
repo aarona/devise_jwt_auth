@@ -18,8 +18,8 @@ module DeviseJwtAuth
 
       # preserve omniauth info for success route. ignore 'extra' in twitter
       # auth response to avoid CookieOverflow.
-      session['dta.omniauth.auth'] = request.env['omniauth.auth'].except('extra')
-      session['dta.omniauth.params'] = request.env['omniauth.params']
+      session['dja.omniauth.auth'] = request.env['omniauth.auth'].except('extra')
+      session['dja.omniauth.params'] = request.env['omniauth.params']
 
       redirect_to redirect_route
     end
@@ -90,7 +90,7 @@ module DeviseJwtAuth
     # it. redirect_callbacks is called upon returning from successful omniauth
     # authentication, and the target params live in an omniauth-specific
     # request.env variable. this variable is then persisted thru the redirect
-    # using our own dta.omniauth.params session var. the omniauth_success
+    # using our own dja.omniauth.params session var. the omniauth_success
     # method will access that session var and then destroy it immediately
     # after use.  In the failure case, finally, the omniauth params
     # are added as query params in our monkey patch to OmniAuth in engine.rb
@@ -98,8 +98,8 @@ module DeviseJwtAuth
       unless defined?(@_omniauth_params)
         if request.env['omniauth.params']&.any?
           @_omniauth_params = request.env['omniauth.params']
-        elsif session['dta.omniauth.params']&.any?
-          @_omniauth_params ||= session.delete('dta.omniauth.params')
+        elsif session['dja.omniauth.params']&.any?
+          @_omniauth_params ||= session.delete('dja.omniauth.params')
           @_omniauth_params
         elsif params['omniauth_window_type']
           @_omniauth_params =
@@ -163,11 +163,11 @@ module DeviseJwtAuth
       omniauth_params['omniauth_window_type']
     end
 
-    # this sesison value is set by the redirect_callbacks method. its purpose
+    # this session value is set by the redirect_callbacks method. its purpose
     # is to persist the omniauth auth hash value thru a redirect. the value
     # must be destroyed immediatly after it is accessed by omniauth_success
     def auth_hash
-      @_auth_hash ||= session.delete('dta.omniauth.auth')
+      @_auth_hash ||= session.delete('dja.omniauth.auth')
       @_auth_hash
     end
 
@@ -190,13 +190,6 @@ module DeviseJwtAuth
         config: @config,
         uid: @resource.uid
       )
-      # @auth_params = {
-      #   auth_token: @token.token,
-      #   client_id:  @token.client,
-      #   uid:        @resource.uid,
-      #   expiry:     @token.expiry,
-      #   config:     @config
-      # }
       @auth_params.merge!(oauth_registration: true) if @oauth_registration
       @auth_params
     end

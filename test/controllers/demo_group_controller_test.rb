@@ -16,33 +16,17 @@ class DemoGroupControllerTest < ActionDispatch::IntegrationTest
         @resource = create(:user, :confirmed)
         @resource_auth_headers = @resource.create_named_token_pair
 
-        # @resource_token     = @resource_auth_headers['access-token']
-        # @resource_client_id = @resource_auth_headers['client']
-        # @resource_expiry    = @resource_auth_headers['expiry']
-
         # mang
         @mang = create(:mang_user, :confirmed)
 
         @mang_auth_headers = @mang.create_named_token_pair
-
-        # @mang_token     = @mang_auth_headers['access-token']
-        # @mang_client_id = @mang_auth_headers['client']
-        # @mang_expiry    = @mang_auth_headers['expiry']
       end
 
       describe 'user access' do
         before do
-          # ensure that request is not treated as batch request
-          # age_token(@resource, @resource_client_id)
-
           get '/demo/members_only_group',
               params: {},
               headers: @resource_auth_headers
-
-          @resp_token       = response.headers['access-token']
-          @resp_client_id   = response.headers['client']
-          @resp_expiry      = response.headers['expiry']
-          @resp_uid         = response.headers['uid']
         end
 
         test 'request is successful' do
@@ -82,17 +66,9 @@ class DemoGroupControllerTest < ActionDispatch::IntegrationTest
 
       describe 'mang access' do
         before do
-          # ensure that request is not treated as batch request
-          # age_token(@mang, @mang_client_id)
-
           get '/demo/members_only_group',
               params: {},
               headers: @mang_auth_headers
-
-          @resp_token       = response.headers['access-token']
-          @resp_client_id   = response.headers['client']
-          @resp_expiry      = response.headers['expiry']
-          @resp_uid         = response.headers['uid']
         end
 
         test 'request is successful' do
