@@ -45,6 +45,12 @@ Then install the gem using bundle:
 bundle install
 ~~~
 
+To get Devise JWT Auth to work with Rails 6.1.4.4, you will need to regress your version of sprockets. To do this, run the command:
+
+~~~bash
+bundle update sprockets
+~~~
+
 More documentation will come later as this project progresses.
 
 ## Need help?
