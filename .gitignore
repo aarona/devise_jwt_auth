@@ -14,7 +14,5 @@ coverage
 .ruby-gemset
 tags
 
-Gemfile.lock
-
 # appraisal
 gemfiles/*.lock
