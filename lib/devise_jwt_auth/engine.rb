@@ -22,6 +22,7 @@ module DeviseJwtAuth
                  :omniauth_prefix,
                  :default_confirm_success_url,
                  :default_password_reset_url,
+                 :default_refresh_token_path,
                  :redirect_whitelist,
                  :check_current_password_before_update,
                  :enable_standard_devise_support,
@@ -40,6 +41,7 @@ module DeviseJwtAuth
   self.access_token_encryption_key               = 'your-access-token-secret-key-here'
   self.batch_request_buffer_throttle             = 5.seconds
   self.omniauth_prefix                           = '/omniauth'
+  self.default_refresh_token_path                = '/auth/refresh_token'
   self.default_confirm_success_url               = nil
   self.default_password_reset_url                = nil
   self.redirect_whitelist                        = nil

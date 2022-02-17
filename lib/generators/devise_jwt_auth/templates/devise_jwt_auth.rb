@@ -64,6 +64,7 @@ DeviseJwtAuth.setup do |config|
   # config.send_confirmation_email = true
 
   # TODO: Document these settings
+  # config.default_refresh_token_path                = '/auth/refresh_token'
   # config.default_confirm_success_url               = nil
   # config.default_password_reset_url                = nil
   # config.redirect_whitelist                        = nil

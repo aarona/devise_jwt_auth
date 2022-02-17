@@ -100,7 +100,7 @@ module DeviseJwtAuth::Concerns::SetUserByToken
   def update_refresh_token_cookie
     response.set_cookie(DeviseJwtAuth.refresh_token_name,
                         value: @resource.create_refresh_token,
-                        path: '/auth/refresh_token', # TODO: Use configured auth path
+                        path: DeviseJwtAuth.default_refresh_token_path,
                         expires: Time.zone.now + DeviseJwtAuth.refresh_token_lifespan,
                         httponly: true,
                         secure: Rails.env.production?)
@@ -109,7 +109,7 @@ module DeviseJwtAuth::Concerns::SetUserByToken
   def clear_refresh_token_cookie
     response.set_cookie(DeviseJwtAuth.refresh_token_name,
                         value: '',
-                        path: '/auth/refresh_token', # TODO: Use configured auth path
+                        path: DeviseJwtAuth.default_refresh_token_path,
                         expires: Time.zone.now)
   end
 end
