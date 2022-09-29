@@ -13,15 +13,19 @@ class Overrides::RefreshTokenControllerTest < ActionDispatch::IntegrationTest
 
   describe Overrides::RefreshTokenController do
     before do
+      DeviseJwtAuth.default_refresh_token_path = '/evil_user_auth/refresh_token'
+
       @resource = create(:user, :confirmed)
       @auth_headers = get_cookie_header(DeviseJwtAuth.refresh_token_name,
                                         @resource.create_refresh_token)
 
-      get '/evil_user_auth/refresh_token',
-          params: {},
-          headers: @auth_headers
+      get DeviseJwtAuth.default_refresh_token_path, params: {}, headers: @auth_headers
 
       @resp = JSON.parse(response.body)
+    end
+
+    teardown do
+      DeviseJwtAuth.default_refresh_token_path = '/auth/refresh_token'
     end
 
     test 'response valid' do

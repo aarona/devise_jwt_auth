@@ -7,23 +7,24 @@ class Custom::RefreshTokenControllerTest < ActionDispatch::IntegrationTest
     include CustomControllersRoutes
 
     before do
+      DeviseJwtAuth.default_refresh_token_path = '/nice_user_auth/refresh_token'
       @resource = create(:user, :confirmed)
       @auth_headers = get_cookie_header(DeviseJwtAuth.refresh_token_name,
                                         @resource.create_refresh_token)
     end
 
+    teardown do
+      DeviseJwtAuth.default_refresh_token_path = '/auth/refresh_token'
+    end
+
     test 'yield resource to block on refresh_token success' do
-      get '/nice_user_auth/refresh_token',
-          params: {},
-          headers: @auth_headers
+      get DeviseJwtAuth.default_refresh_token_path, params: {}, headers: @auth_headers
       assert @controller.refresh_token_block_called?,
              'refresh_token failed to yield resource to provided block'
     end
 
     test 'yield resource to block on refresh_token success with custom json' do
-      get '/nice_user_auth/refresh_token',
-          params: {},
-          headers: @auth_headers
+      get DeviseJwtAuth.default_refresh_token_path, params: {}, headers: @auth_headers
 
       @data = JSON.parse(response.body)
 

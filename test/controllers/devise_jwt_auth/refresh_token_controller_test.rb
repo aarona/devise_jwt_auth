@@ -9,7 +9,7 @@ class DeviseJwtAuth::RefreshTokenControllerTest < ActionDispatch::IntegrationTes
         @resource = create(:user, :confirmed)
         @auth_headers = get_cookie_header(DeviseJwtAuth.refresh_token_name,
                                           @resource.create_refresh_token)
-        get '/auth/refresh_token', params: {}, headers: @auth_headers
+        get DeviseJwtAuth.default_refresh_token_path, params: {}, headers: @auth_headers
         @resp = JSON.parse(response.body)
       end
 
@@ -27,7 +27,7 @@ class DeviseJwtAuth::RefreshTokenControllerTest < ActionDispatch::IntegrationTes
         @resource = create(:user)
         @auth_headers = get_cookie_header(DeviseJwtAuth.refresh_token_name,
                                           @resource.create_refresh_token)
-        get '/auth/refresh_token', params: {}, headers: @auth_headers
+        get DeviseJwtAuth.default_refresh_token_path, params: {}, headers: @auth_headers
         @resp = JSON.parse(response.body)
       end
 
@@ -47,7 +47,7 @@ class DeviseJwtAuth::RefreshTokenControllerTest < ActionDispatch::IntegrationTes
         @expired_token = @resource.create_refresh_token(exp: @exp)
         @auth_headers = get_cookie_header(DeviseJwtAuth.refresh_token_name,
                                           @expired_token)
-        get '/auth/refresh_token', params: {}, headers: @auth_headers
+        get DeviseJwtAuth.default_refresh_token_path, params: {}, headers: @auth_headers
         @resp = JSON.parse(response.body)
       end
 
@@ -62,9 +62,8 @@ class DeviseJwtAuth::RefreshTokenControllerTest < ActionDispatch::IntegrationTes
 
     describe 'an invalid refresh token' do
       before do
-        @auth_headers = get_cookie_header(DeviseJwtAuth.refresh_token_name,
-                                          'invalid-token')
-        get '/auth/refresh_token', params: {}, headers: @auth_headers
+        @auth_headers = get_cookie_header(DeviseJwtAuth.refresh_token_name, 'invalid-token')
+        get DeviseJwtAuth.default_refresh_token_path, params: {}, headers: @auth_headers
         @resp = JSON.parse(response.body)
       end
 
