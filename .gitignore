@@ -13,6 +13,6 @@ coverage
 .ruby-version
 .ruby-gemset
 tags
-
+*.gem
 # appraisal
 gemfiles/*.lock
