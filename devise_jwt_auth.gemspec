@@ -20,10 +20,10 @@ Gem::Specification.new do |s|
   s.test_files = Dir['test/**/*']
   s.test_files.reject! { |file| file.match(/[.log|.sqlite3]$/) }
 
-  s.required_ruby_version = '>= 2.4.0'
+  s.required_ruby_version = '>= 2.7.3'
 
   s.add_dependency 'devise', '> 3.5.2'
-  s.add_dependency 'rails', '>= 6.1.6.1'
+  s.add_dependency 'rails', '~> 6.1.7.1' #, '~> 7.0.4.1'
   s.add_dependency 'sprockets', '3.7.2' # FIXME: breaking changes in 4.0.0
   # s.add_dependency 'bcrypt', '~> 3.0' # Is bcrypt needed anymore?
   s.add_dependency 'jwt', '~> 2.1'
