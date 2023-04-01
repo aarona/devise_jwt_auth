@@ -24,9 +24,6 @@ group :development, :test do
   gem 'omniauth-google-oauth2'
   gem 'rack-cors'
   gem 'thor'
-
-  # testing
-  # gem 'spring'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'faker'
@@ -53,6 +50,7 @@ end
 
 group :development do
   gem 'github_changelog_generator'
+  gem 'ruby_audit'
 end
 
 if ENV['MONGOID_VERSION']

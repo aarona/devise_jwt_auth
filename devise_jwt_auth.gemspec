@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.7.3'
 
   s.add_dependency 'devise', '~> 4.8.1'
-  s.add_dependency 'rails', '~> 6.1.7.1'
+  s.add_dependency 'rails', '~> 6.1.7.1', '>= 6.1.7.3'
   s.add_dependency 'jwt', '~> 2.1'
 
   s.add_development_dependency 'appraisal'
